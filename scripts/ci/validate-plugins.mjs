@@ -5,11 +5,9 @@
 //   - missing plugin source paths
 //   - missing or malformed YAML frontmatter on agents, commands, skills
 //   - missing required `description` on commands and skills
-//   - malformed `description` shape — value must terminate on a single line.
-//     Plain scalars end at end-of-line; double-quoted values must close with `"`
-//     on the same line. Block scalars (`|` / `>`) and unclosed quoted strings
-//     are rejected — both are visually fragile in YAML and never appear in
-//     official Claude Code agent/skill/command examples.
+//   - malformed `description` shape — accepted forms are plain scalars, block
+//     scalars (`|` / `>`), and double-quoted strings that close on the same line.
+//     Rejected: double-quoted strings that span multiple lines (multi-line quoted).
 //   - broken cross-references in `skills:` frontmatter (agent or command points
 //     to a skill name that doesn't exist under any plugin's skills/ tree)
 
@@ -46,8 +44,13 @@ const hasDescription = (file) =>
   /^description:/m.test(fs.readFileSync(file, 'utf8'));
 
 // Validate the shape of the `description:` value.
-// Must be a single-line plain scalar or double-quoted string.
-// Block scalars (| / >) and unclosed quoted strings are rejected.
+// Accepted forms:
+//   - plain scalar (single line)
+//   - block scalar (| or >) — multi-line is fine
+//   - double-quoted string that closes on the same line
+// Rejected:
+//   - double-quoted string that does NOT close on the same line (multi-line quoted)
+//   - empty value
 const validateDescriptionShape = (file) => {
   const content = fs.readFileSync(file, 'utf8');
   const fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -61,9 +64,12 @@ const validateDescriptionShape = (file) => {
   const raw = lines[descIdx].slice('description:'.length);
   const value = raw.replace(/^\s+/, '');
   if (value === '') return { ok: false, reason: 'description value is empty' };
-  if (value === '|' || value === '>' || value.startsWith('|') || value.startsWith('>')) {
-    return { ok: false, reason: `block scalar form (${value[0]}) not allowed — use single-line plain or double-quoted` };
+  // Block scalars (| / >) are allowed — no further checks needed
+  if (value === '|' || value === '>' || value.startsWith('|-') || value.startsWith('>-') ||
+      value.startsWith('|+') || value.startsWith('>+')) {
+    return { ok: true };
   }
+  // Double-quoted: must close on the same line
   if (value.startsWith('"')) {
     let i = 1;
     let closed = false;
@@ -73,7 +79,7 @@ const validateDescriptionShape = (file) => {
       i++;
     }
     if (!closed) {
-      return { ok: false, reason: 'double-quoted description does not close on same line' };
+      return { ok: false, reason: 'double-quoted description does not close on the same line — use a block scalar (>) instead' };
     }
     const trailing = value.substring(i + 1).trim();
     if (trailing !== '' && !trailing.startsWith('#')) {
