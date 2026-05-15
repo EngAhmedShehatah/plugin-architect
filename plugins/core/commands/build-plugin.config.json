@@ -1,0 +1,97 @@
+{
+  "command": "build-plugin",
+  "questionFlow": [
+    {
+      "step": 2,
+      "action": "parallel-scan",
+      "agents": [
+        { "name": "git-detector", "path": "../agents/git-detector.md" },
+        { "name": "schema-scanner", "path": "../agents/schema-scanner.md" },
+        { "name": "tech-stack-detector", "path": "../agents/tech-stack-detector.md" }
+      ]
+    },
+    {
+      "step": 3,
+      "condition": "schema-scanner.isMonorepo === true",
+      "questions": [
+        {
+          "id": "monorepo-strategy",
+          "prompt": "This is a monorepo project. Do you want one plugin for all packages, or one separate plugin for each?",
+          "options": ["one-for-all", "one-per-package"]
+        },
+        {
+          "id": "shared-plugin",
+          "condition": "monorepo-strategy === 'one-per-package'",
+          "prompt": "Do you want a shared/core plugin to avoid duplication across packages?",
+          "options": ["yes-shared-core", "no-duplication-is-fine"]
+        }
+      ]
+    },
+    {
+      "step": 3,
+      "id": "mode-selection",
+      "prompt": "Which mode do you want to build your plugin with?",
+      "options": [
+        { "value": "light", "descriptionSource": "../modes/light.md" },
+        { "value": "medium", "descriptionSource": "../modes/medium.md" },
+        { "value": "deep", "descriptionSource": "../modes/deep.md" }
+      ]
+    },
+    {
+      "step": 4,
+      "id": "ai-model",
+      "prompt": "Which AI model are you planning to use this plugin against?",
+      "options": ["claude-code", "opencode", "codex", "copilot"]
+    }
+  ],
+  "defaults": {
+    "light": {
+      "splitStrategy": "by-role",
+      "skillsPerRole": 1,
+      "agentsPerRole": 1,
+      "namingConvention": "role-based",
+      "examples": {
+        "implementation": ["implementer"],
+        "testing": ["tester"],
+        "review": ["code-reviewer"],
+        "git": ["git-handler"]
+      }
+    },
+    "medium": {
+      "splitStrategy": "by-concern",
+      "skillsPerRole": "1-per-concern",
+      "agentsPerRole": "1-per-concern",
+      "namingConvention": "concern-based",
+      "examples": {
+        "implementation": ["implementer"],
+        "testing": ["unit-tester", "e2e-tester"],
+        "review": ["code-reviewer"],
+        "git": ["git-handler"]
+      }
+    },
+    "deep": {
+      "splitStrategy": "by-domain-and-concern",
+      "skillsPerRole": "1-per-domain-concern-pair",
+      "agentsPerRole": "1-per-domain-concern-pair",
+      "namingConvention": "domain-specific",
+      "examples": {
+        "implementation": ["core-implementer", "api-implementer", "mcp-implementer"],
+        "testing": ["unit-tester", "e2e-tester", "mcp-tester"],
+        "review": ["code-reviewer", "security-scanner"],
+        "git": ["git-handler"]
+      }
+    }
+  },
+  "folderStructureRules": {
+    "always": [
+      ".claude-plugin/plugin.json",
+      "plugins/core/.claude-plugin/plugin.json",
+      "plugins/core/skills/",
+      "plugins/core/agents/",
+      "plugins/core/commands/pilot.md",
+      "plugins/core/scripts/session-init.mjs",
+      "plugins/core/.mcp.json",
+      "README.md"
+    ]
+  }
+}
