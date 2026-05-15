@@ -1,0 +1,32 @@
+#!/bin/sh
+# Pre-commit hook: runs markdownlint + plugin structure validator before every commit.
+#
+# One-time setup per developer:
+#   npm install
+#   git config core.hooksPath .githooks
+#
+# Cross-platform: macOS/Linux native, Windows via Git Bash bundled with Git for Windows.
+
+ROOT="$(git rev-parse --show-toplevel)"
+
+# Check node
+if ! command -v node >/dev/null 2>&1; then
+  echo "❌ pre-commit: 'node' not found on PATH" >&2
+  echo "   Install Node.js and ensure 'node' is on your PATH, then retry." >&2
+  exit 1
+fi
+
+# Check node_modules
+if [ ! -d "$ROOT/node_modules" ]; then
+  echo "❌ pre-commit: node_modules not found." >&2
+  echo "   Run 'npm install' first, then retry the commit." >&2
+  exit 1
+fi
+
+echo "🔍 Running markdownlint..."
+cd "$ROOT" && node_modules/.bin/markdownlint-cli2 "**/*.md" "#node_modules" || exit 1
+
+echo "🔍 Running plugin validator..."
+node "$ROOT/scripts/ci/validate-plugins.mjs" || exit 1
+
+echo "✅ All checks passed."
