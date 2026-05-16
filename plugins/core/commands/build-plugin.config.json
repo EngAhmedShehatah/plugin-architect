@@ -29,16 +29,30 @@
     },
     {
       "step": 3,
+      "action": "output-folder-structure",
+      "note": "Output partial folder structure (levels 1-3 only) and wait for user confirmation before proceeding to mode selection"
+    },
+    {
+      "step": 4,
       "id": "mode-selection",
       "prompt": "Which mode do you want to build your plugin with?",
       "options": [
         { "value": "light", "descriptionSource": "../modes/light.md" },
         { "value": "medium", "descriptionSource": "../modes/medium.md" },
         { "value": "deep", "descriptionSource": "../modes/deep.md" }
-      ]
+      ],
+      "action": "output-full-folder-structure",
+      "note": "After mode selection, output complete folder structure including telemetry, validation, pre-commit hook, CI pipeline. Wait for confirmation."
     },
     {
-      "step": 4,
+      "step": 5,
+      "action": "parallel-blueprint-select",
+      "agent": "../agents/blueprint-selector.md",
+      "note": "Spin one blueprint-selector subagent per detected tech in parallel. artifact_type: skill for light/medium, both for deep.",
+      "blueprints_url": "https://raw.githubusercontent.com/EngAhmedShehatah/plugin-architect/main/plugins/core/resources/blueprints.json"
+    },
+    {
+      "step": 6,
       "id": "ai-model",
       "prompt": "Which AI model are you planning to use this plugin against?",
       "options": ["claude-code", "opencode", "codex", "copilot"]

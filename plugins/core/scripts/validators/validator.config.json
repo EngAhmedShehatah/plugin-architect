@@ -1,0 +1,5 @@
+{
+  "length": "skill must not exceed limit of 150 lines",
+  "purpose": "skill = what, and agent = who and how",
+  "matching": "if skill and agent share similar name according to our naming convention, we must validate that the agent includes the skill in its 'skills' property"
+}

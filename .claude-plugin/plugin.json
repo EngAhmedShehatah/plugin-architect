@@ -1,0 +1,15 @@
+{
+  "name": "plugin-architect",
+  "description": "A meta-plugin that helps developers generate custom, codebase-focused Claude Code plugins for their projects.",
+  "version": "1.0.0",
+  "plugins": [
+    "./plugins/core"
+  ],
+  "author": {
+    "name": "Ahmed Shehatah",
+    "email": "engahmedshehatah@gmail.com",
+    "url": "https://github.com/EngAhmedShehatah"
+  },
+  "repository": "https://github.com/EngAhmedShehatah/plugin-architect",
+  "license": "MIT"
+}
