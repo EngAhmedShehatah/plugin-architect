@@ -14,8 +14,6 @@ You are a single-tech blueprint finder. You take one tech, run the `blueprint-se
 ## Input
 
 - `tech` — single tech name
-- `artifact_type` — one of: skill | agent | command | hook
-- `blueprints_url` — raw GitHub URL to `resources/blueprints.json`
 - `feedback` — optional — user's reason for rejecting a previous result
 
 ## What you do
@@ -28,12 +26,13 @@ If `feedback` is provided, pass it to the skill so it can avoid the previously r
 
 ```json
 {
-  "tech": "nextjs",
+  "tech": "python",
   "found": true,
-  "source_id": "anthropics-claude-plugins-official",
-  "source_name": "Anthropic Claude Plugins Official",
-  "url": "https://github.com/anthropics/claude-plugins-official/tree/main/skills/nextjs",
-  "raw_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/skills/nextjs/SKILL.md"
+  "source_id": "skills-sh",
+  "source_name": "Skills.sh — Agent Skills Directory",
+  "skill_name": "python-testing-patterns",
+  "installs": 20254,
+  "url": "https://www.skills.sh/wshobson/agents/python-testing-patterns"
 }
 ```
 

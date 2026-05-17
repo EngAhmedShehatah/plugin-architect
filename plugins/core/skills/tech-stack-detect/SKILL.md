@@ -14,6 +14,7 @@ Reads manifest and config files from `project_path` and returns a flat list of e
 ## Normalization rules
 
 Apply to all `name` and `category` values before returning:
+
 - Lowercase everything
 - Strip trailing residuals: `-runtime`, `-lang`, `-package`, `-tool`, `-js`, `-ts`
 - Replace spaces and underscores with hyphens
@@ -22,6 +23,7 @@ Apply to all `name` and `category` values before returning:
 ## Detection steps
 
 ### 1. JavaScript / TypeScript projects
+
 Read `package.json` from `dependencies` + `devDependencies`. The following are common examples — detect and name any package you recognize:
 
 | Package | name | category |
@@ -55,6 +57,7 @@ For packages not in this list, detect the name from the package identifier and a
 Version: use the resolved version string from `package.json`. Strip leading `^` `~`.
 
 ### 2. Config file signals
+
 Check for these files regardless of `package.json` content. Common examples — detect any config-based technology you recognize:
 
 | File | name | category |
@@ -66,6 +69,7 @@ Check for these files regardless of `package.json` content. Common examples — 
 | `lerna.json` | `lerna` | `monorepo-tool` |
 
 ### 3. Python projects
+
 Read `pyproject.toml` or `requirements.txt`. Common examples:
 
 | Package | name | category |
@@ -78,9 +82,11 @@ Read `pyproject.toml` or `requirements.txt`. Common examples:
 | `celery` | `celery` | `queue` |
 
 ### 4. Go projects
+
 Read `go.mod`. Extract the module path and Go version. Detect notable direct dependencies using the same approach as above.
 
 ### 5. PHP projects
+
 Read `composer.json`. Detect frameworks, ORMs, and tooling using the same approach.
 
 ## Output format

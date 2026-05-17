@@ -18,6 +18,7 @@ Reads git configuration and CI files from `project_path` to identify where the r
 ## Normalization rules
 
 Apply to all output string values before returning:
+
 - Lowercase everything
 - Strip trailing residuals: `-runtime`, `-lang`, `-package`, `-tool`, `-ci`, `-cd`
 - Replace spaces and underscores with hyphens
@@ -26,6 +27,7 @@ Apply to all output string values before returning:
 ## Detection steps
 
 ### 1. Remote URL
+
 Run `git -C <project_path> remote get-url origin`.
 Parse the host from the URL and normalize it. The following are common examples — use your own knowledge for anything not listed:
 
@@ -39,10 +41,12 @@ Parse the host from the URL and normalize it. The following are common examples 
 If no remote exists: `remote_url: none`, `host: unknown`.
 
 ### 2. Default branch
+
 Run `git -C <project_path> symbolic-ref refs/remotes/origin/HEAD --short` and strip the `origin/` prefix.
 Fallback: `git config init.defaultBranch`. If still unresolvable, use `main`.
 
 ### 3. Branch model
+
 Inspect branch names via `git -C <project_path> branch -a`. Use your understanding of branching strategies — common examples:
 
 | Signal | branch_model |
@@ -54,6 +58,7 @@ Inspect branch names via `git -C <project_path> branch -a`. Use your understandi
 If a recognizable strategy is detected that doesn't match these examples, name it accurately in kebab-case.
 
 ### 4. CI provider
+
 Check for CI config files under `project_path`. Common examples — detect any CI system you recognize:
 
 | File / folder | ci_provider |

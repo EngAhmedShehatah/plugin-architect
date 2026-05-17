@@ -48,8 +48,7 @@
       "step": 5,
       "action": "parallel-blueprint-select",
       "agent": "../agents/blueprint-selector.md",
-      "note": "Spin one blueprint-selector subagent per detected tech in parallel. artifact_type: skill for light/medium, both for deep.",
-      "blueprints_url": "https://raw.githubusercontent.com/EngAhmedShehatah/plugin-architect/main/plugins/core/resources/blueprints.json"
+      "note": "Spin one blueprint-selector subagent per detected tech in parallel. Each receives only: tech."
     },
     {
       "step": 6,

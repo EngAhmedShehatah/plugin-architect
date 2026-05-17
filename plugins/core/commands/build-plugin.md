@@ -1,3 +1,14 @@
+---
+name: build-plugin
+description: Orchestrates the full plugin build journey — scans the codebase, selects blueprints, generates skills and agents, and delivers a ready-to-install Claude Code plugin.
+tools:
+  - Agent
+  - Read
+  - Write
+  - Bash
+  - WebFetch
+---
+
 # orchestrator command
 
 ## name: build-plugin
@@ -77,18 +88,15 @@ example for separate plugins:
 
 - spin one `blueprint-selector` subagent per detected tech from `tech-stack-detector` output, all in parallel. Each subagent receives:
   - `tech` — the tech name
-  - `artifact_type` — `skill` for light and medium mode, `both` for deep mode
-  - `blueprints_url` — `https://raw.githubusercontent.com/EngAhmedShehatah/plugin-architect/main/plugins/core/resources/blueprints.json`
 
 - wait for all subagents to finish
 
-- display a table to the user:
+- display a table to the user (below is example, use real values):
 
-  | Tech | Artifact | Found | Source | Link |
-  |---|---|---|---|---|
-  | nextjs | skill | ✅ | Anthropic Claude Plugins Official | [open](url) |
-  | nextjs | agent | ❌ | — | — |
-  | prisma | skill | ✅ | Vercel Labs Skills | [open](url) |
+  | Tech | Found | Skill | Source | Link |
+  | --- | --- | --- | --- | --- |
+  | nextjs | ✅ | vercel-react-best-practices | Skills.sh | [open](https://www.skills.sh) |
+  | prisma | ❌ | — | — | — |
 
   - every tech must appear — no hidden rows
   - ❌ rows are shown clearly with no source and no link

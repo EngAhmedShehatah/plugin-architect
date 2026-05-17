@@ -17,6 +17,7 @@ Reads config and manifest files from `project_path` to determine whether the pro
 ## Normalization rules
 
 Apply to all output string values before returning:
+
 - Lowercase everything
 - Strip trailing residuals: `-runtime`, `-lang`, `-package`, `-manager`, `-tool`
 - Replace spaces and underscores with hyphens
@@ -25,6 +26,7 @@ Apply to all output string values before returning:
 ## Detection steps
 
 ### 1. Package manager
+
 Check for lockfiles and config files. The following are common examples — detect any package manager you recognize:
 
 | File | package_manager |
@@ -41,7 +43,9 @@ Check for lockfiles and config files. The following are common examples — dete
 First match wins.
 
 ### 2. Monorepo detection
+
 A project is a monorepo if ANY of the following is true:
+
 - `package.json` root has a `workspaces` field
 - `pnpm-workspace.yaml` exists
 - `nx.json` or `turbo.json` exists at root
@@ -49,6 +53,7 @@ A project is a monorepo if ANY of the following is true:
 - Multiple `package.json` files exist more than one directory level deep
 
 ### 3. Workspace mapping
+
 If monorepo, resolve workspace globs from `package.json#workspaces` or `pnpm-workspace.yaml#packages`. For each resolved path, read `package.json` to extract `name` and detect `type`.
 
 Workspace type detection — check files inside each workspace path. The following are common examples — use your own knowledge to name any framework or tool you recognize:

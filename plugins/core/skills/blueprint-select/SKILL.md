@@ -1,70 +1,79 @@
 ---
 name: blueprint-select
-description: Searches all official blueprint sources for a single technology and returns the best matching artifact.
+description: Searches all configured skill sources for a single technology and returns the best matching skill.
 input:
   tech: single tech name (e.g. "nextjs")
-  artifact_type: one of — skill | agent | command | hook
-  blueprints_url: raw GitHub URL to blueprints.json
   feedback: optional — reason a previous result was rejected, to guide a better pick
 output:
   tech: string
   found: boolean
   source_id: string | null
   source_name: string | null
+  skill_name: string | null
+  installs: number | null
   url: string | null
-  raw_url: string | null
 ---
 
 ## What this skill does
 
-Searches one tech across all fetchable blueprint sources. Returns one result. Does not interact with the user.
+Searches one tech across all sources defined in `./resources/urls.json`. Returns the single best matching skill. Does not interact with the user.
 
 ## Normalization rules
 
 - Lowercase the tech name before searching
 - Strip residuals: `-runtime`, `-lang`, `-js`, `-ts`
-- Match against file names, folder names, and frontmatter `name` / `description` fields
 
 ## Detection steps
 
-### 1. Fetch blueprints.json
+### 1. Read urls.json
 
-Fetch the file at `blueprints_url`. Parse the `sources` array. Skip any source where `raw_base_url` is `null`.
+Read `./resources/urls.json`. Parse the `sources` array.
 
-### 2. Apply feedback if provided
+### 2. Call the search API — mandatory first action
 
-If `feedback` is present, it means a previous result was rejected. Use it to skip that result and find a better alternative.
+For each source, take the `search_url` value exactly as written, replace `{tech}` with the normalized tech name, and fetch that URL immediately. Do not browse the website. Do not guess alternative URLs. The API is the only entry point.
 
-### 3. Search each source
+For `skills-sh` the call is:
 
-For each fetchable source, try common path conventions:
+```text
+GET https://www.skills.sh/api/search?q={tech}
+```
 
-- `<raw_base_url>/skills/<tech>/SKILL.md`
-- `<raw_base_url>/<tech>/SKILL.md`
-- `<raw_base_url>/agents/<tech>.md`
+### 3. Pick the best result
 
-Use WebFetch to verify each path. First verified match wins.
+From the API response, pick the skill with the highest `installs` count whose name or description best matches the tech. Extract the `source` field (org/repo format, e.g. `wshobson/agents`) and the skill `name` or `id` from the response.
+
+If `feedback` is present, skip the previously returned skill and pick the next best match.
 
 ### 4. Not found
 
-If no source yields a match, return `found: false` with all URL fields as `null`.
+If the API returns no results, return `found: false` with all other fields as `null`. Do not attempt to browse the website as a fallback.
 
 ## Output format
 
 ```json
 {
-  "tech": "nextjs",
+  "tech": "python",
   "found": true,
-  "source_id": "anthropics-claude-plugins-official",
-  "source_name": "Anthropic Claude Plugins Official",
-  "url": "https://github.com/anthropics/claude-plugins-official/tree/main/skills/nextjs",
-  "raw_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/skills/nextjs/SKILL.md"
+  "source_id": "skills-sh",
+  "source_name": "Skills.sh — Agent Skills Directory",
+  "skill_name": "python-testing-patterns",
+  "installs": 20254,
+  "url": "https://www.skills.sh/wshobson/agents/python-testing-patterns"
 }
 ```
+
+## URL construction
+
+The `url` field MUST be the full direct URL to the specific skill page — never just `https://www.skills.sh` or any other root/generic URL.
+
+Construct it as: `https://www.skills.sh/{source}/{skill_name}` where `source` is the org/repo returned by the API (e.g. `wshobson/agents`) and `skill_name` is the skill identifier.
+
+If the API response does not contain enough information to construct the full URL, fetch `https://www.skills.sh/api/search?q={tech}` again and extract the `source` and `id`/`name` fields from the result.
 
 ## Constraints
 
 - Read-only. No writes.
 - Do not interact with the user.
-- Do not fabricate URLs — only return URLs verified via WebFetch.
-- skills.sh is not fetchable at runtime — skip it.
+- Do not fabricate values — only return data present in the API response.
+- NEVER return a root or generic URL like `https://www.skills.sh` as the `url` field — this is always wrong.

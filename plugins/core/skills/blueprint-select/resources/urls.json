@@ -1,0 +1,10 @@
+{
+  "sources": [
+    {
+      "id": "skills-sh",
+      "name": "Skills.sh — Agent Skills Directory",
+      "search_url": "https://www.skills.sh/api/search?q={tech}",
+      "artifact_types": ["skill"]
+    }
+  ]
+}
