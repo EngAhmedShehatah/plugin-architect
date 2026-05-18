@@ -2,7 +2,12 @@
 name: skill-creator
 description: Creates a new skill markdown file. Invoke this agent whenever a skill needs to be generated for the plugin being built — during build-plugin execution when scaffolding skills for a target codebase, or any time a new skill file is required.
 model: sonnet
-tools: Skill, Read, Edit, Bash
+tools: 
+   - Skill
+   - Read
+   - Edit
+   - Bash
+color: green
 ---
 
 You create new skill markdown files using the /skill-creator plugin skill.

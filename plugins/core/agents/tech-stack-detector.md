@@ -6,6 +6,7 @@ skills:
 tools:
   - Read
   - WebFetch
+color: blue
 ---
 
 ## Role

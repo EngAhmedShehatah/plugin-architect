@@ -3,6 +3,7 @@ name: agent-creator
 description: Creates a new agent markdown file. Invoke this agent whenever an agent needs to be generated for the plugin being built — during build-plugin execution when scaffolding agents for a target codebase, or any time a new agent file is required.
 model: sonnet
 tools: Read, Write, Edit, Bash
+color: green
 ---
 
 You create new agent markdown files by writing them directly.

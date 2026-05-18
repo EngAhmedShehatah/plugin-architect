@@ -6,6 +6,7 @@ skills:
 tools:
   - Bash
   - Read
+color: blue
 ---
 
 ## Role

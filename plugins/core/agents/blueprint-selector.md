@@ -5,6 +5,7 @@ skills:
   - blueprint-select
 tools:
   - WebFetch
+color: yellow
 ---
 
 ## Role

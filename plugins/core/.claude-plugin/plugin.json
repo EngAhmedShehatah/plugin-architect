@@ -1,6 +1,6 @@
 {
   "name": "core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Claude Code plugin that devs can use to create focused custom plugins for their projects",
   "author": {
     "name": "Ahmed Shehatah",
@@ -9,7 +9,10 @@
   },
   "repository": "https://github.com/EngAhmedShehatah/plugin-architect/plugins/core",
   "license": "MIT",
-  "keywords": ["Claude Code", "Plugin"],
+  "keywords": [
+    "Claude Code",
+    "Plugin"
+  ],
   "skills": [
     "./skills/git-detect",
     "./skills/plugin-validate",
@@ -17,7 +20,9 @@
     "./skills/tech-stack-detect",
     "./skills/blueprint-select"
   ],
-  "commands": ["./commands/build-plugin.md"],
+  "commands": [
+    "./commands/build-plugin.md"
+  ],
   "agents": [
     "./agents/git-detector.md",
     "./agents/schema-scanner.md",
@@ -25,5 +30,17 @@
     "./agents/plugin-validator.md",
     "./agents/blueprint-selector.md"
   ],
-  "mcpServers": "./.mcp.json"
+  "mcpServers": "./.mcp.json",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/scripts/session-init.mjs"
+          }
+        ]
+      }
+    ]
+  }
 }
