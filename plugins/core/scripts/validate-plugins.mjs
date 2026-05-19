@@ -1,7 +1,10 @@
 #!/usr/bin/env node
-// Plugin structure validator. Runs in GitHub Actions (PRs) and locally via pre-commit hook.
+// Plugin structure validator.
+// Usage: node validate-plugins.mjs <marketplace-path>
+//
+// Runs in CI and locally via pre-commit hook.
 // Catches the main failure modes that prevent plugins from loading:
-//   - invalid JSON in any manifest (marketplace, plugin, hooks, mcp)
+//   - invalid JSON in any manifest (plugin, hooks, mcp)
 //   - missing plugin source paths
 //   - missing or malformed YAML frontmatter on agents, commands, skills
 //   - missing required `description` on commands and skills
@@ -13,18 +16,22 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = path.resolve(SCRIPT_DIR, '..', '..');
-const MARKETPLACE = path.join(REPO_ROOT, '.claude-plugin', 'marketplace.json');
+const ROOT = process.argv[2] ? path.resolve(process.argv[2]) : null;
+
+if (!ROOT) {
+  console.error('Usage: node validate-plugins.mjs <marketplace-path>');
+  process.exit(1);
+}
+
+const MANIFEST = path.join(ROOT, '.claude-plugin', 'plugin.json');
 
 let errors = 0;
 
-const hdr = (s) => console.log(`\n━━━ ${s} ━━━`);
-const err = (s) => { console.log(`  ❌ ${s}`); errors++; };
-const ok  = (s) => console.log(`  ✅ ${s}`);
-const repoRel = (p) => path.relative(REPO_ROOT, p);
+const hdr     = (s) => console.log(`\n━━━ ${s} ━━━`);
+const err     = (s) => { console.log(`  ❌ ${s}`); errors++; };
+const ok      = (s) => console.log(`  ✅ ${s}`);
+const rootRel = (p) => path.relative(ROOT, p);
 
 const parseJson = (file) => {
   try {
@@ -43,14 +50,6 @@ const hasFrontmatter = (file) => {
 const hasDescription = (file) =>
   /^description:/m.test(fs.readFileSync(file, 'utf8'));
 
-// Validate the shape of the `description:` value.
-// Accepted forms:
-//   - plain scalar (single line)
-//   - block scalar (| or >) — multi-line is fine
-//   - double-quoted string that closes on the same line
-// Rejected:
-//   - double-quoted string that does NOT close on the same line (multi-line quoted)
-//   - empty value
 const validateDescriptionShape = (file) => {
   const content = fs.readFileSync(file, 'utf8');
   const fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -64,12 +63,10 @@ const validateDescriptionShape = (file) => {
   const raw = lines[descIdx].slice('description:'.length);
   const value = raw.replace(/^\s+/, '');
   if (value === '') return { ok: false, reason: 'description value is empty' };
-  // Block scalars (| / >) are allowed — no further checks needed
   if (value === '|' || value === '>' || value.startsWith('|-') || value.startsWith('>-') ||
       value.startsWith('|+') || value.startsWith('>+')) {
     return { ok: true };
   }
-  // Double-quoted: must close on the same line
   if (value.startsWith('"')) {
     let i = 1;
     let closed = false;
@@ -95,7 +92,6 @@ const listMd = (dir) =>
     .filter((f) => f.endsWith('.md'))
     .map((f) => path.join(dir, f));
 
-// Extract `skills:` array entries from a file's YAML frontmatter.
 const extractSkillRefs = (file) => {
   const content = fs.readFileSync(file, 'utf8');
   const fm = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -110,29 +106,31 @@ const extractSkillRefs = (file) => {
   return refs;
 };
 
-// Resolve a raw skill ref to its canonical `<pluginName>:<skillName>` form.
 const resolveSkillRef = (ref, ownerPluginName) =>
   ref.includes(':') ? ref : `${ownerPluginName}:${ref}`;
 
-// ==== marketplace.json ====
-hdr('Marketplace manifest');
-if (!fs.existsSync(MARKETPLACE)) {
-  err(`marketplace.json not found at ${repoRel(MARKETPLACE)}`);
+// ==== plugin.json ====
+hdr('Plugin manifest');
+if (!fs.existsSync(MANIFEST)) {
+  err(`plugin.json not found at ${rootRel(MANIFEST)}`);
   process.exit(1);
 }
-const marketplace = parseJson(MARKETPLACE);
-if (!marketplace.ok) {
-  err(`marketplace.json is invalid JSON: ${marketplace.error}`);
+const manifest = parseJson(MANIFEST);
+if (!manifest.ok) {
+  err(`plugin.json is invalid JSON: ${manifest.error}`);
   process.exit(1);
 }
-ok('marketplace.json valid');
+ok('plugin.json valid');
 
-const plugins = marketplace.data.plugins || [];
+const plugins = (manifest.data.plugins || []).map((source) => ({
+  name: path.basename(source.replace(/^\.\//, '')),
+  source,
+}));
 
 // ==== build skill registry ====
 const skillRegistry = new Set();
 for (const { name: pluginName, source } of plugins) {
-  const root = path.join(REPO_ROOT, source.replace(/^\.\//, ''));
+  const root = path.join(ROOT, source.replace(/^\.\//, ''));
   const skillsDir = path.join(root, 'skills');
   if (!isDir(skillsDir)) continue;
   for (const e of fs.readdirSync(skillsDir, { withFileTypes: true })) {
@@ -146,26 +144,25 @@ for (const { name: pluginName, source } of plugins) {
 // ==== per-plugin checks ====
 for (const { name, source } of plugins) {
   hdr(`Plugin: ${name} (${source})`);
-  const cleanSource = source.replace(/^\.\//, '');
-  const pluginRoot = path.join(REPO_ROOT, cleanSource);
+  const pluginRoot = path.join(ROOT, source.replace(/^\.\//, ''));
 
   if (!isDir(pluginRoot)) {
-    err(`missing plugin dir: ${pluginRoot}`);
+    err(`missing plugin dir: ${rootRel(pluginRoot)}`);
     continue;
   }
 
-  const manifest = path.join(pluginRoot, '.claude-plugin', 'plugin.json');
-  if (!fs.existsSync(manifest)) {
-    err(`missing ${repoRel(manifest)}`);
+  const pluginManifest = path.join(pluginRoot, '.claude-plugin', 'plugin.json');
+  if (!fs.existsSync(pluginManifest)) {
+    err(`missing ${rootRel(pluginManifest)}`);
     continue;
   }
-  const pm = parseJson(manifest);
+  const pm = parseJson(pluginManifest);
   if (!pm.ok) {
-    err(`invalid JSON: ${repoRel(manifest)} (${pm.error})`);
+    err(`invalid JSON: ${rootRel(pluginManifest)} (${pm.error})`);
     continue;
   }
   if (!pm.data.name) {
-    err(`plugin.json missing 'name': ${repoRel(manifest)}`);
+    err(`plugin.json missing 'name': ${rootRel(pluginManifest)}`);
     continue;
   }
   ok(`plugin.json: name=${pm.data.name}`);
@@ -174,15 +171,9 @@ for (const { name, source } of plugins) {
   const agentsDir = path.join(pluginRoot, 'agents');
   if (isDir(agentsDir)) {
     for (const f of listMd(agentsDir)) {
-      if (!hasFrontmatter(f)) {
-        err(`agent missing or malformed frontmatter: ${repoRel(f)}`);
-        continue;
-      }
+      if (!hasFrontmatter(f)) { err(`agent missing or malformed frontmatter: ${rootRel(f)}`); continue; }
       const descCheck = validateDescriptionShape(f);
-      if (!descCheck.ok) {
-        err(`agent ${path.basename(f)}: ${descCheck.reason}`);
-        continue;
-      }
+      if (!descCheck.ok) { err(`agent ${path.basename(f)}: ${descCheck.reason}`); continue; }
       const refs = extractSkillRefs(f);
       const broken = refs.filter((r) => !skillRegistry.has(resolveSkillRef(r, pm.data.name)));
       if (broken.length > 0) {
@@ -198,19 +189,10 @@ for (const { name, source } of plugins) {
   const commandsDir = path.join(pluginRoot, 'commands');
   if (isDir(commandsDir)) {
     for (const f of listMd(commandsDir)) {
-      if (!hasFrontmatter(f)) {
-        err(`command missing frontmatter: ${repoRel(f)}`);
-        continue;
-      }
-      if (!hasDescription(f)) {
-        err(`command missing description: ${repoRel(f)}`);
-        continue;
-      }
+      if (!hasFrontmatter(f)) { err(`command missing frontmatter: ${rootRel(f)}`); continue; }
+      if (!hasDescription(f)) { err(`command missing description: ${rootRel(f)}`); continue; }
       const descCheck = validateDescriptionShape(f);
-      if (!descCheck.ok) {
-        err(`command ${path.basename(f)}: ${descCheck.reason}`);
-        continue;
-      }
+      if (!descCheck.ok) { err(`command ${path.basename(f)}: ${descCheck.reason}`); continue; }
       const refs = extractSkillRefs(f);
       const broken = refs.filter((r) => !skillRegistry.has(resolveSkillRef(r, pm.data.name)));
       if (broken.length > 0) {
@@ -231,19 +213,10 @@ for (const { name, source } of plugins) {
     for (const sd of subdirs) {
       const skillFile = path.join(sd, 'SKILL.md');
       if (!fs.existsSync(skillFile)) continue;
-      if (!hasFrontmatter(skillFile)) {
-        err(`skill missing frontmatter: ${repoRel(skillFile)}`);
-        continue;
-      }
-      if (!hasDescription(skillFile)) {
-        err(`skill missing description: ${repoRel(skillFile)}`);
-        continue;
-      }
+      if (!hasFrontmatter(skillFile)) { err(`skill missing frontmatter: ${rootRel(skillFile)}`); continue; }
+      if (!hasDescription(skillFile)) { err(`skill missing description: ${rootRel(skillFile)}`); continue; }
       const descCheck = validateDescriptionShape(skillFile);
-      if (!descCheck.ok) {
-        err(`skill ${path.basename(sd)}: ${descCheck.reason}`);
-        continue;
-      }
+      if (!descCheck.ok) { err(`skill ${path.basename(sd)}: ${descCheck.reason}`); continue; }
       ok(`skill: ${path.basename(sd)}`);
     }
   }
@@ -253,7 +226,7 @@ for (const { name, source } of plugins) {
   if (fs.existsSync(hooksJson)) {
     const hj = parseJson(hooksJson);
     if (hj.ok) ok('hooks.json valid JSON');
-    else err(`hooks.json invalid JSON: ${repoRel(hooksJson)} (${hj.error})`);
+    else err(`hooks.json invalid JSON: ${rootRel(hooksJson)} (${hj.error})`);
   }
 
   // MCP JSON
@@ -261,7 +234,7 @@ for (const { name, source } of plugins) {
   if (fs.existsSync(mcpJson)) {
     const mj = parseJson(mcpJson);
     if (mj.ok) ok('.mcp.json valid JSON');
-    else err(`.mcp.json invalid JSON: ${repoRel(mcpJson)} (${mj.error})`);
+    else err(`.mcp.json invalid JSON: ${rootRel(mcpJson)} (${mj.error})`);
   }
 }
 

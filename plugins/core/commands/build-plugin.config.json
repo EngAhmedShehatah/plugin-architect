@@ -98,11 +98,14 @@
   "folderStructureRules": {
     "always": [
       ".claude-plugin/plugin.json",
+      ".githooks/pre-commit",
       "plugins/core/.claude-plugin/plugin.json",
       "plugins/core/skills/",
       "plugins/core/agents/",
       "plugins/core/commands/pilot.md",
       "plugins/core/scripts/session-init.mjs",
+      "plugins/core/scripts/version-bump.mjs",
+      "plugins/core/scripts/validate-plugins.mjs",
       "plugins/core/.mcp.json",
       "README.md"
     ]

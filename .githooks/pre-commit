@@ -1,5 +1,5 @@
 #!/bin/sh
-# Pre-commit hook: runs markdownlint + plugin structure validator before every commit.
+# Pre-commit hook: runs plugin validator + markdownlint + version bump before every commit.
 #
 # One-time setup per developer:
 #   npm install
@@ -23,10 +23,13 @@ if [ ! -d "$ROOT/node_modules" ]; then
   exit 1
 fi
 
+echo "🔍 Running plugin validator..."
+node "$ROOT/plugins/core/scripts/validate-plugins.mjs" "$ROOT" || exit 1
+
 echo "🔍 Running markdownlint..."
 cd "$ROOT" && node_modules/.bin/markdownlint-cli2 "**/*.md" "#node_modules" || exit 1
 
-echo "🔍 Running plugin validator..."
-node "$ROOT/scripts/ci/validate-plugins.mjs" || exit 1
+echo "🔢 Running version bump..."
+node "$ROOT/plugins/core/scripts/version-bump.mjs" || exit 1
 
 echo "✅ All checks passed."

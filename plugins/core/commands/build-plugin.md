@@ -158,9 +158,15 @@ example for separate plugins:
   - agent-creator: found at '../agents/agent-creator.md' and used to create the agent using an input blueprint and a prompt that describes to focus on the codebase and rewrite the blueprint agent according to it.
 
 - pair by pair until all skills and agents are finished.
-- copy the session-init related stuff to the marketplace
-- copy the version-bump related stuff to the marketplace (remember to check for compatibility please)
-- copy the validators according to the AI model of his choice
+- copy the following scripts from `plugins/core/scripts/` into `marketplace/plugins/core/scripts/`:
+  - `session-init.mjs` → `marketplace/plugins/core/scripts/session-init.mjs`
+  - `version-bump.mjs` → `marketplace/plugins/core/scripts/version-bump.mjs`
+  - `validate-plugins.mjs` → `marketplace/plugins/core/scripts/validate-plugins.mjs`
+- generate `marketplace/.githooks/pre-commit` — do not copy ours, generate it fresh using the marketplace plugin folder name so the paths are correct:
+  - validator: `node "$ROOT/plugins/core/scripts/validate-plugins.mjs" "$ROOT"`
+  - markdownlint: same as ours
+  - version bump: `node "$ROOT/plugins/core/scripts/version-bump.mjs"`
+  - make it executable (`chmod +x`)
 - copy the telemetry/monitors to the respective folder in the marketplace
 
 ### step 9
@@ -173,7 +179,13 @@ example for separate plugins:
 
 ### step 10
 
-- validate everything again. run validation across the marketplace created plugin and make sure it is valid to be used.
+- validate everything again by running:
+
+  ```bash
+  node marketplace/plugins/core/scripts/validate-plugins.mjs marketplace/
+  ```
+
+  fix any reported errors before proceeding.
 
 ### step 11
 

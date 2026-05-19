@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "lint": "markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
-    "validate": "node scripts/ci/validate-plugins.mjs",
+    "validate": "node plugins/core/scripts/validate-plugins.mjs .",
     "check": "npm run lint && npm run validate"
   },
   "devDependencies": {
