@@ -30,6 +30,31 @@ tools:
     3. tech-stack-detector at '../agents/tech-stack-detector.md'
 - once they finish, check each agent's output report and print it out to the user
 
+### step 2.5
+
+- before moving forward, classify the `tech-stack-detector` output into two groups:
+  - skill-worthy techs: frameworks, languages, test runners, major databases, build tools, runtime platforms, and core infrastructure the user is likely to need workflow skills for
+  - utility/infra techs: middleware, auth tokens, documentation generators, analytics, minor libraries, third-party APIs, and implementation details that should be skipped by default
+
+- show the proposed split to the user before any `blueprint-selector` subagents are spawned:
+
+  The tech names below are examples only. Replace them with the real values from `tech-stack-detector` output — never copy these example values into the actual response.
+
+  > Here are the detected techs. I'll search for skills for the ones marked ✅. Let me know if you want to add or remove any before I start searching.
+  >
+  > ✅ example-skill-worthy-tech-1, example-skill-worthy-tech-2
+  > ⚠️ example-utility-tech-1, example-utility-tech-2 (utility/infra — skipping by default)
+
+- wait for the user to confirm or adjust the list. accepted replies:
+
+  > - **confirm** — search only the ✅ techs
+  > - **add [tech]** — move a skipped tech into the search list
+  > - **remove [tech]** — remove a tech from the search list
+  > - **set [techs...]** — replace the search list with exactly these techs
+
+- do not proceed to step 3 or spawn any `blueprint-selector` subagents until the user has confirmed the final list
+- once confirmed, save the result as the confirmed skill-worthy tech list — this is the only input step 5 uses
+
 ### step 3
 
 - based on the output from `schema-scanner` agent, if project is monorepo, then ask user:
@@ -86,7 +111,7 @@ example for separate plugins:
 
 ### step 5
 
-- spin one `blueprint-selector` subagent per detected tech from `tech-stack-detector` output, all in parallel. Each subagent receives:
+- spin one `blueprint-selector` subagent per confirmed skill-worthy tech from step 2.5, all in parallel. Each subagent receives:
   - `tech` — the tech name
 
 - wait for all subagents to finish
@@ -98,6 +123,7 @@ example for separate plugins:
   | nextjs | ✅ | vercel-react-best-practices | Skills.sh | [open](https://www.skills.sh) |
   | prisma | ❌ | — | — | — |
 
+  - only confirmed skill-worthy techs from step 2.5 appear in this table — no utility/infra techs
   - every tech must appear — no hidden rows
   - ❌ rows are shown clearly with no source and no link
   - links must be ctrl+clickable
@@ -153,11 +179,24 @@ example for separate plugins:
 
 ### step 8
 
-- spin one pair of subagents at a time:
-  - skill-creator: found at '../agents/skill-creator.md' and used to create the skill using an input blueprint and a prompt that describes to focus on the codebase and rewrite the blueprint skill according to it.
-  - agent-creator: found at '../agents/agent-creator.md' and used to create the agent using an input blueprint and a prompt that describes to focus on the codebase and rewrite the blueprint agent according to it.
+**Do NOT create skills or agents inline in the main agent. You MUST use the `Agent` tool for every skill and every agent — no exceptions.**
 
-- pair by pair until all skills and agents are finished.
+For each skill/agent pair, invoke both subagents in parallel in the same message using the `Agent` tool:
+
+- **skill-creator** — `subagent_type: "skill-creator"`. The prompt must include:
+  - `output path`: full path where the skill file must be written (e.g. `marketplace/plugins/core/skills/<skill-name>/SKILL.md`)
+  - `blueprint`: inline description of what this skill must do, its scope, and constraints (derived from the blueprint content fetched in step 5)
+  - `focus prompt`: one sentence instructing the skill to be codebase-specific — operating on the user's actual project, not a hypothetical codebase
+  - `validator`: `marketplace/plugins/core/scripts/validate-plugins.mjs`
+
+- **agent-creator** — `subagent_type: "agent-creator"`. The prompt must include:
+  - `output path`: full path where the agent file must be written (e.g. `marketplace/plugins/core/agents/<agent-name>.md`)
+  - `blueprint`: inline description of the agent's role, tools it needs, and constraints (derived from the blueprint content fetched in step 5)
+  - `focus prompt`: one sentence instructing the agent to be codebase-specific — referencing the user's actual project structure and stack
+  - `validator`: `marketplace/plugins/core/scripts/validate-plugins.mjs`
+
+Spawn both `Agent` calls for the same pair together in one message (parallel). Wait for both to finish, then move to the next pair. Pair by pair until all skills and agents are finished.
+
 - copy the following scripts from `plugins/core/scripts/` into `marketplace/plugins/core/scripts/`:
   - `session-init.mjs` → `marketplace/plugins/core/scripts/session-init.mjs`
   - `version-bump.mjs` → `marketplace/plugins/core/scripts/version-bump.mjs`
