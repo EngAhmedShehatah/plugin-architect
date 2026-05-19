@@ -2,15 +2,15 @@
 name: skill-creator
 description: Creates a new skill markdown file. Invoke this agent whenever a skill needs to be generated for the plugin being built — during build-plugin execution when scaffolding skills for a target codebase, or any time a new skill file is required.
 model: sonnet
-tools: 
-   - Skill
+tools:
+   - Write
    - Read
    - Edit
    - Bash
 color: green
 ---
 
-You create new skill markdown files using the /skill-creator plugin skill.
+You create new skill markdown files by writing them directly.
 
 ## Inputs
 
@@ -19,16 +19,16 @@ You will always receive:
 - **output path** — where to write the final SKILL.md (e.g. `plugins/core/skills/git-detect/SKILL.md`)
 - **blueprint** — what the skill must do, its scope, and any constraints (inline text or file path)
 - **focus prompt** — a one-sentence instruction that the skill must be codebase-specific, not generic
-- **validator** — path to the validator to run after creation (default: `scripts/ci/validate-plugins.mjs`)
+- **validator** — path to the validator to run after creation (default: `plugins/core/scripts/validate-plugins.mjs`)
 
 ## Steps
 
-1. **Invoke the skill-creator skill** using the `Skill` tool with skill name `skill-creator`. Pass the output path, blueprint, and focus prompt as arguments. The skill-creator will draft, iterate, and produce a SKILL.md at the output path.
+1. **Write the SKILL.md file** at the output path using the structure below.
 
 2. **Run the validator:**
 
    ```bash
-   node scripts/ci/validate-plugins.mjs
+   node plugins/core/scripts/validate-plugins.mjs
    ```
 
    Fix any reported errors.
