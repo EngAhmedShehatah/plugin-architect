@@ -183,13 +183,13 @@ example for separate plugins:
 
 For each skill/agent pair, invoke both subagents in parallel in the same message using the `Agent` tool:
 
-- **skill-creator** — `subagent_type: "skill-creator"`. The prompt must include:
+- skill-creator agent at '../agents/skill-creator.md' . The prompt must include:
   - `output path`: full path where the skill file must be written (e.g. `marketplace/plugins/core/skills/<skill-name>/SKILL.md`)
   - `blueprint`: inline description of what this skill must do, its scope, and constraints (derived from the blueprint content fetched in step 5)
   - `focus prompt`: one sentence instructing the skill to be codebase-specific — operating on the user's actual project, not a hypothetical codebase
   - `validator`: `marketplace/plugins/core/scripts/validate-plugins.mjs`
 
-- **agent-creator** — `subagent_type: "agent-creator"`. The prompt must include:
+- agent-creator agent at '../agents/agent-creator.md' . The prompt must include:
   - `output path`: full path where the agent file must be written (e.g. `marketplace/plugins/core/agents/<agent-name>.md`)
   - `blueprint`: inline description of the agent's role, tools it needs, and constraints (derived from the blueprint content fetched in step 5)
   - `focus prompt`: one sentence instructing the agent to be codebase-specific — referencing the user's actual project structure and stack
