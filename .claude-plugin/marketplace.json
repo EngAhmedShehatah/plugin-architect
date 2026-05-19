@@ -1,0 +1,14 @@
+{
+  "name": "plugin-architect",
+  "owner": {
+    "name": "Ahmed Shehatah",
+    "github": "EngAhmedShehatah"
+  },
+  "plugins": [
+    {
+      "name": "core",
+      "source": "./plugins/core",
+      "description": "A Claude Code plugin that devs can use to create focused custom plugins for their projects"
+    }
+  ]
+}
