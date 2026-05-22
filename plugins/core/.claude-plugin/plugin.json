@@ -28,7 +28,9 @@
     "./agents/schema-scanner.md",
     "./agents/tech-stack-detector.md",
     "./agents/plugin-validator.md",
-    "./agents/blueprint-selector.md"
+    "./agents/blueprint-selector.md",
+    "./agents/skill-creator.md",
+    "./agents/agent-creator.md"
   ],
   "mcpServers": "./.mcp.json",
   "hooks": {
