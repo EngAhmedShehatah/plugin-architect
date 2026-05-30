@@ -30,7 +30,7 @@ Most AI coding plugins are generic. They work for any project, which means they'
 
 ## File tree
 
-```
+```text
 plugin-architect/
 ├── .claude-plugin/
 │   ├── marketplace.json
@@ -143,7 +143,7 @@ You should see `plugin-architect` marketplace and `core` plugin listed.
 
 Navigate to the root of your project and run:
 
-```
+```text
 /build-plugin
 ```
 
@@ -172,7 +172,7 @@ The command will guide you through the full journey interactively:
 
 After `/build-plugin` completes, your project will have:
 
-```
+```text
 your-project/
 └── marketplace/
     ├── .claude-plugin/

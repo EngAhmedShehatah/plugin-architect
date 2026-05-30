@@ -92,6 +92,18 @@ const listMd = (dir) =>
     .filter((f) => f.endsWith('.md'))
     .map((f) => path.join(dir, f));
 
+const checkRegistration = (label, fsNames, manifestNames) => {
+  const unregistered = [...fsNames].filter((n) => !manifestNames.has(n));
+  if (unregistered.length > 0) {
+    err(
+      `${label}: ${unregistered.length} item(s) found on disk but missing from plugin.json — ` +
+      `add to "${label}" array: ${unregistered.map((n) => JSON.stringify(n)).join(', ')}`
+    );
+    return false;
+  }
+  return true;
+};
+
 const extractSkillRefs = (file) => {
   const content = fs.readFileSync(file, 'utf8');
   const fm = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -183,6 +195,9 @@ for (const { name, source } of plugins) {
         ok(`agent: ${path.basename(f)}${tag}`);
       }
     }
+    const fsAgentNames       = new Set(listMd(agentsDir).map((f) => path.basename(f)));
+    const manifestAgentNames = new Set((pm.data.agents || []).map((a) => path.basename(a)));
+    checkRegistration('agents', fsAgentNames, manifestAgentNames);
   }
 
   // Commands
@@ -202,6 +217,9 @@ for (const { name, source } of plugins) {
         ok(`command: ${path.basename(f)}${tag}`);
       }
     }
+    const fsCommandNames       = new Set(listMd(commandsDir).map((f) => path.basename(f)));
+    const manifestCommandNames = new Set((pm.data.commands || []).map((c) => path.basename(c)));
+    checkRegistration('commands', fsCommandNames, manifestCommandNames);
   }
 
   // Skills
@@ -219,6 +237,15 @@ for (const { name, source } of plugins) {
       if (!descCheck.ok) { err(`skill ${path.basename(sd)}: ${descCheck.reason}`); continue; }
       ok(`skill: ${path.basename(sd)}`);
     }
+    const fsSkillNames = new Set(
+      fs.readdirSync(skillsDir, { withFileTypes: true })
+        .filter((e) => e.isDirectory() && fs.existsSync(path.join(skillsDir, e.name, 'SKILL.md')))
+        .map((e) => e.name)
+    );
+    const manifestSkillNames = new Set(
+      (pm.data.skills || []).map((s) => path.basename(s.replace(/\/$/, '')))
+    );
+    checkRegistration('skills', fsSkillNames, manifestSkillNames);
   }
 
   // Hooks JSON
