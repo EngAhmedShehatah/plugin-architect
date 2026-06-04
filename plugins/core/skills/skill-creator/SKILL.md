@@ -105,15 +105,10 @@ Before finalizing:
 - [ ] All code blocks tagged with language
 - [ ] "output:" schema matches examples
 
-## Workflow
+**NOTE:** Validator script path — The validator (`validate-plugins.mjs`) may not exist in early plugin scaffolding. The agent orchestrating this skill is responsible for:
 
-1. Review `blueprint` — understand what the skill must do
-2. Derive skill `name` from output_path
-3. Write frontmatter with name, description, input/output schema
-4. Write "What this skill does" section
-5. Write "How to execute this skill" with numbered steps
-6. Add any additional sections needed (normalization, validation, etc.)
-7. Write "Output format" section with example
-8. Run validator: `node plugins/core/scripts/validate-plugins.mjs`
-9. Fix any violations and re-run until passing
-10. Confirm: skill name, output path, validation passed
+- Fetching the latest validator from the live plugin-architect repository (HTTPS path)
+- Placing it in a standard location accessible during the session
+- Providing the correct path to the validator in the workflow
+
+Consult the build-plugin command for validator availability and path resolution.
