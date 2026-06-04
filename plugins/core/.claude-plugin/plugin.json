@@ -17,6 +17,7 @@
     "./skills/git-detect",
     "./skills/plugin-validate",
     "./skills/schema-scan",
+    "./skills/skill-creator",
     "./skills/tech-stack-detect",
     "./skills/blueprint-select"
   ],
