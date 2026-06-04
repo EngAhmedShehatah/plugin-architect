@@ -14,12 +14,13 @@
     "Plugin"
   ],
   "skills": [
+    "./skills/agent-creator",
+    "./skills/blueprint-select",
     "./skills/git-detect",
     "./skills/plugin-validate",
     "./skills/schema-scan",
     "./skills/skill-creator",
-    "./skills/tech-stack-detect",
-    "./skills/blueprint-select"
+    "./skills/tech-stack-detect"
   ],
   "commands": [
     "./commands/build-plugin.md"
