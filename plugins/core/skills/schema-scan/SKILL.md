@@ -14,6 +14,18 @@ output:
 
 Reads config and manifest files from `project_path` to determine whether the project contains multiple packages, which package manager is in use, and the list of workspace packages with their paths and types.
 
+## How to execute this skill
+
+This skill is fully self-contained and works standalone on any tool. You have access to Bash and Read tools.
+
+1. Execute each detection step below in order
+2. For each step, follow the specific file-reading instructions
+3. Glob resolution and symlink logic is included — you can handle it yourself
+4. Collect the results into a single JSON object
+5. Return the JSON object when complete
+
+You can run this skill entirely on your own — no agent orchestration is required.
+
 ## Normalization rules
 
 Apply to all output string values before returning:

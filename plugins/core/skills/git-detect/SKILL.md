@@ -15,6 +15,17 @@ output:
 
 Reads git configuration and CI files from `project_path` to identify where the repository is hosted, what branching strategy is in use, and which CI/CD provider is configured.
 
+## How to execute this skill
+
+This skill is fully self-contained and works standalone on any tool. You have access to Bash and Read tools.
+
+1. Execute each detection step below in order
+2. For each step, follow the specific command or file-reading instructions
+3. Collect the results into a single JSON object
+4. Return the JSON object when complete
+
+You can run this skill entirely on your own — no agent orchestration is required.
+
 ## Normalization rules
 
 Apply to all output string values before returning:
