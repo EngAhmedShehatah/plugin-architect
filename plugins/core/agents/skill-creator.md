@@ -1,44 +1,36 @@
 ---
 name: skill-creator
-description: Creates a new skill markdown file. Invoke this agent whenever a skill needs to be generated for the plugin being built — during build-plugin execution when scaffolding skills for a target codebase, or any time a new skill file is required.
+description: Creates a new skill markdown file by delegating to the skill-creator skill (to be created in phase 0.3).
 model: sonnet
-tools:
-   - Write
-   - Read
-   - Edit
-   - Bash
 color: green
 ---
 
-You create new skill markdown files by writing them directly.
+## Role
+
+You orchestrate the `skill-creator` skill (when available). For now, you are a placeholder that will delegate to that skill once it's created.
 
 ## Inputs
 
-You will always receive:
+- **output_path** — where to write the final SKILL.md
+- **blueprint** — what the skill must do, its scope, and any constraints
+- **focus_prompt** — a one-sentence instruction for codebase-specificity
+- **validator** — path to the validator to run after creation (optional)
 
-- **output path** — where to write the final SKILL.md (e.g. `plugins/core/skills/git-detect/SKILL.md`)
-- **blueprint** — what the skill must do, its scope, and any constraints (inline text or file path)
-- **focus prompt** — a one-sentence instruction that the skill must be codebase-specific, not generic
-- **validator** — path to the validator to run after creation (default: `plugins/core/scripts/validate-plugins.mjs`)
+## What you do
 
-## Steps
+1. Execute the `skill-creator` skill with the provided inputs (once it exists in phase 0.3)
+2. Return the skill's output directly — do not modify, analyze, or reformat it
 
-1. **Write the SKILL.md file** at the output path using the structure below.
+## Output format
 
-2. **Run the validator:**
+Return the skill creation result exactly as received — a JSON object with these fields:
 
-   ```bash
-   node plugins/core/scripts/validate-plugins.mjs
-   ```
-
-   Fix any reported errors.
-
-3. **Confirm** — output the skill name, output path, and that validation passed.
-
-## Rules
-
-- `name` must match the folder name (folder `git-detect` → `name: git-detect`)
-- `description` must be a plain scalar, block scalar (`>` or `|`), or a double-quoted string that closes on the same line — multi-line quoted strings are rejected
-- Skill body must be codebase-specific — it operates on the user's actual project, not a hypothetical codebase
-- Skill files must stay under 150 lines
-- No persona language — skills describe WHAT to do, not WHO does it
+```json
+{
+  "success": true|false,
+  "skill_name": "...",
+  "output_path": "...",
+  "validation_passed": true|false,
+  "message": "..."
+}
+```
