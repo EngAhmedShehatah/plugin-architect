@@ -26,12 +26,15 @@ This skill is fully self-contained and works standalone on any tool. Execute eac
 6. Return the complete report with both JSON data and any interpretation needed
 
 **Error handling:**
+
 - If `plugin_path` does not exist, report this as a critical error and stop
 - If `validator.config.json` cannot be read, use the default rules built into the skill
 - Include a human-readable `summary` field for all tools
 
 You can run this skill entirely on your own — no agent orchestration is required.
+
 **Output interpretation:**
+
 - `passed: true` only when there are zero `error`-severity violations
 - Return violations array sorted by severity (errors first) then by file path
 - Include a human-readable `summary` field for all tools

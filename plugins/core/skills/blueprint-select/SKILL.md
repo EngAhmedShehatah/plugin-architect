@@ -30,6 +30,7 @@ This skill is fully self-contained and works standalone on any tool. Execute eac
 6. If no results are found, return `found: false` with null values
 
 **Error handling:**
+
 - If `urls.json` cannot be read, fail gracefully with a clear error message
 - If an API call times out or fails, skip that source and try the next one
 - If all sources fail, return `found: false` with null values
