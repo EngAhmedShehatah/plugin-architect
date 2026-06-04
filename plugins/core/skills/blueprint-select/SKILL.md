@@ -20,7 +20,7 @@ Searches one tech across all sources defined in `./resources/urls.json`. Returns
 
 ## How to execute this skill
 
-This skill is fully self-contained and works standalone on any tool. You have access to WebFetch and Read tools.
+This skill is fully self-contained and works standalone on any tool. Execute each detection step in order using whatever methods are available to you (file reading, web requests, etc.).
 
 1. Read the `urls.json` resource file (found at `./resources/urls.json` relative to this skill)
 2. For each source in the `sources` array, call the search API exactly as specified below

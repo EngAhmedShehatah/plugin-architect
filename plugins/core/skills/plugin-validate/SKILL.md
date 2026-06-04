@@ -16,7 +16,7 @@ Reads every artifact inside `plugin_path` and checks it against the rules define
 
 ## How to execute this skill
 
-This skill is fully self-contained and works standalone on any tool. You have access to Read tools.
+This skill is fully self-contained and works standalone on any tool. Execute each step in order using whatever methods are available to you (file reading, etc.).
 
 1. Load the validator config from `config_path` (or use the default path if not provided)
 2. Recursively read all `.md` files under `plugin_path/skills/` and `plugin_path/agents/`
@@ -28,9 +28,9 @@ This skill is fully self-contained and works standalone on any tool. You have ac
 **Error handling:**
 - If `plugin_path` does not exist, report this as a critical error and stop
 - If `validator.config.json` cannot be read, use the default rules built into the skill
-- If individual files are missing or unreadable, report each as a violation and continue checking others
-- Never stop early — complete the full scan even if errors are found
+- Include a human-readable `summary` field for all tools
 
+You can run this skill entirely on your own — no agent orchestration is required.
 **Output interpretation:**
 - `passed: true` only when there are zero `error`-severity violations
 - Return violations array sorted by severity (errors first) then by file path

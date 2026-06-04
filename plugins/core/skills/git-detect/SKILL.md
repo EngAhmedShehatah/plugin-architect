@@ -17,10 +17,10 @@ Reads git configuration and CI files from `project_path` to identify where the r
 
 ## How to execute this skill
 
-This skill is fully self-contained and works standalone on any tool. You have access to Bash and Read tools.
+This skill is fully self-contained and works standalone on any tool. Execute each detection step in order using whatever methods are available to you (file reading, command execution, etc.).
 
 1. Execute each detection step below in order
-2. For each step, follow the specific command or file-reading instructions
+2. For each step, follow the specific instructions (run commands or read files as you're able)
 3. Collect the results into a single JSON object
 4. Return the JSON object when complete
 
