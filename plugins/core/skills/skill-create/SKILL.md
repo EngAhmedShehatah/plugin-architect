@@ -1,5 +1,5 @@
 ---
-name: skill-creator
+name: skill-create
 description: Provides the template, rules, and procedural steps for creating a new skill markdown file that is codebase-specific and follows plugin-architect conventions.
 input:
   blueprint: string — what the skill must do, its scope, and constraints

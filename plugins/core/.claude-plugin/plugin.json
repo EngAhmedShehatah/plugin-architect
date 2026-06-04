@@ -14,12 +14,12 @@
     "Plugin"
   ],
   "skills": [
-    "./skills/agent-creator",
+    "./skills/agent-create",
     "./skills/blueprint-select",
     "./skills/git-detect",
     "./skills/plugin-validate",
     "./skills/schema-scan",
-    "./skills/skill-creator",
+    "./skills/skill-create",
     "./skills/tech-stack-detect"
   ],
   "commands": [

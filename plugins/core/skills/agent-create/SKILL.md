@@ -1,5 +1,5 @@
 ---
-name: agent-creator
+name: agent-create
 description: Provides the template, rules, and procedural steps for creating a new agent markdown file that is codebase-specific, focused, and follows plugin-architect conventions.
 input:
   blueprint: string — what the agent must do, its role, tools needed, and constraints
