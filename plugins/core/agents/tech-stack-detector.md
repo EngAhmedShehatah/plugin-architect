@@ -1,8 +1,6 @@
 ---
 name: tech-stack-detector
 description: Scans the target project's full tech stack and returns the list of detected technologies for the main agent to use in blueprint selection.
-skills:
-  - tech-stack-detect
 color: blue
 ---
 

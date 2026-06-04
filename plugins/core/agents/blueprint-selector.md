@@ -1,8 +1,6 @@
 ---
 name: blueprint-selector
 description: Finds the best available blueprint for a single technology using the blueprint-select skill.
-skills:
-  - blueprint-select
 color: yellow
 ---
 

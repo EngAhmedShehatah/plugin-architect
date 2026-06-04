@@ -1,8 +1,6 @@
 ---
 name: schema-scanner
 description: Detects the target project's repository structure, package manager, and workspace layout.
-skills:
-  - schema-scan
 color: blue
 ---
 

@@ -1,8 +1,6 @@
 ---
 name: git-detector
 description: Detects the target project's git hosting provider, branching strategy, and CI/CD setup.
-skills:
-  - git-detect
 color: blue
 ---
 

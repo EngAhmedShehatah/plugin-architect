@@ -1,8 +1,6 @@
 ---
 name: plugin-validator
 description: Validates a generated plugin folder and produces a pass/fail report per artifact.
-skills:
-  - plugin-validate
 ---
 
 ## Role
