@@ -33,13 +33,15 @@ This skill is fully self-contained and works standalone on any tool. Execute eac
 
 You can run this skill entirely on your own — no agent orchestration is required.
 
-**Output interpretation:**
+**Output interpretation and formatting:**
 
 - `passed: true` only when there are zero `error`-severity violations
 - Return violations array sorted by severity (errors first) then by file path
 - Include a human-readable `summary` field for all tools
-
-You can run this skill entirely on your own — no agent orchestration is required.
+- After returning the JSON report, format a text summary for developers:
+  - List each `error` violation as a numbered action item that must be fixed before plugin usage
+  - List each `warning` violation separately as a recommendation for review
+  - Do not auto-fix violations — report only
 
 ## Validation rules
 
