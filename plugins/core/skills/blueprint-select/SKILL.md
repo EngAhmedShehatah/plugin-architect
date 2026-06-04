@@ -18,6 +18,26 @@ output:
 
 Searches one tech across all sources defined in `./resources/urls.json`. Returns the single best matching skill. Does not interact with the user.
 
+## How to execute this skill
+
+This skill is fully self-contained and works standalone on any tool. Execute each detection step in order using whatever methods are available to you (file reading, web requests, etc.).
+
+1. Read the `urls.json` resource file (found at `./resources/urls.json` relative to this skill)
+2. For each source in the `sources` array, call the search API exactly as specified below
+3. Pick the best result based on install count and match quality
+4. Handle the `feedback` parameter to skip previously rejected results
+5. Construct the full URL to the skill page and return the structured output
+6. If no results are found, return `found: false` with null values
+
+**Error handling:**
+
+- If `urls.json` cannot be read, fail gracefully with a clear error message
+- If an API call times out or fails, skip that source and try the next one
+- If all sources fail, return `found: false` with null values
+- Never fabricate API responses
+
+You can run this skill entirely on your own — no agent orchestration is required.
+
 ## Normalization rules
 
 - Lowercase the tech name before searching

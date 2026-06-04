@@ -11,6 +11,20 @@ output:
 
 Reads manifest and config files from `project_path` and returns a flat list of every technology detected, with version and category. Does not run any install or build commands.
 
+## How to execute this skill
+
+This skill is fully self-contained and works standalone on any tool. Execute each detection step in order using whatever methods are available to you (file reading, web requests, etc.).
+
+1. Execute each detection step below in order (JS/TS, Config files, Python, Go, PHP)
+2. For each step, follow the specific instructions (read files, fetch data, or query APIs as you're able)
+3. Handle deduplication yourself — if a tech is detected from both `package.json` and a config file, emit one entry
+4. Collect the results into a single JSON object
+5. Return the JSON object when complete
+
+For monorepos, you will need to run this against each workspace path individually and merge results deduplicating by `name`. You can handle this merging yourself.
+
+You can run this skill entirely on your own — no agent orchestration is required.
+
 ## Normalization rules
 
 Apply to all `name` and `category` values before returning:
