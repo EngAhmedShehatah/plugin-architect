@@ -26,7 +26,7 @@ You will always receive:
 
 ## Workflow
 
-1. Invoke skill-creator skill with blueprint, focus_prompt, output_path
+1. Invoke skill-create skill with blueprint, focus_prompt, output_path
 2. Receive template, validation checklist, and skill name
 3. Write the template to output_path as SKILL.md
 4. Run the validator (or consult build-plugin for path resolution)
