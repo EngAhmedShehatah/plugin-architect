@@ -102,6 +102,7 @@
       "plugins/core/.claude-plugin/plugin.json",
       "plugins/core/skills/",
       "plugins/core/agents/",
+      "plugins/core/references/",
       "plugins/core/commands/pilot.md",
       "plugins/core/scripts/session-init.mjs",
       "plugins/core/scripts/version-bump.mjs",
