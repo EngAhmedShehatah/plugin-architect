@@ -1,6 +1,5 @@
-<!-- DO NOT EDIT DIRECTLY: this file is a source template/blueprint for generated pilot commands. Copy it into the generated plugin and customize the copy, not this reference. -->
-<!-- markdownlint-disable MD022 MD031 MD032 MD026 MD040 -->
 ---
+# DO NOT EDIT DIRECTLY: this file is a source template/blueprint for generated pilot commands. Copy it into the generated plugin and customize the copy, not this reference.
 description: Full ticket-to-PR orchestrator for altify-maxai — fetches Jira, plans with user approval, implements, reviews (≤2 iterations), tests in parallel, commits, and returns a Bitbucket PR URL.
 argument-hint: ALT-XXXXX or Jira URL
 allowed-tools: Read, Write, Glob, Grep, Agent, Bash(git:*), Bash(cat:*), Bash(ls:*), Bash(test:*), Bash(jq:*), Bash(sf:*), TodoWrite, EnterPlanMode, ExitPlanMode, mcp__atlassian__getAccessibleAtlassianResources, mcp__atlassian__getJiraIssue
@@ -15,6 +14,7 @@ Run the full development workflow for a Jira ticket against the altify-maxai cod
 $ARGUMENTS
 
 Parse the arguments for a Jira ticket reference. Accept any of these formats:
+
 - **Ticket ID**: `ALT-12345` (matches pattern `ALT-\d+`)
 - **Jira URL**: `https://altify.atlassian.net/browse/ALT-12345` (extract the `ALT-\d+` segment)
 - **Raw number**: `12345` (matches pattern `\d+`; prepend `ALT-` automatically → `ALT-12345`)
@@ -38,13 +38,11 @@ The SessionStart hook (`altify-core/scripts/telemetry/session-init.mjs`) writes 
 SID="$MAX_SESSION_ID"
 
 # Fallback 1: read sentinel via CLAUDE_PLUGIN_DATA when present
-
 if [ -z "$SID" ] && [ -n "$CLAUDE_PLUGIN_DATA" ] && [ -f "$CLAUDE_PLUGIN_DATA/.current-session-id" ]; then
   SID=$(cat "$CLAUDE_PLUGIN_DATA/.current-session-id")
 fi
 
 # Fallback 2: tool-call shell may have neither env var; glob both install variants under $HOME
-
 if [ -z "$SID" ]; then
   for d in "$HOME"/.claude/plugins/data/max-*; do
     [ -f "$d/.current-session-id" ] || continue
@@ -55,7 +53,7 @@ if [ -z "$SID" ]; then
 fi
 
 test -n "$SID" && test -d "${CLAUDE_PLUGIN_DATA}/tmp/${SID}" || { echo "BLOCKED: session folder not initialised"; exit 1; }
-```bash
+```
 
 If the block exits with `BLOCKED:` (no env var, no sentinel, no folder), stop and report:
 
@@ -121,7 +119,7 @@ echo "NPM=$NPM"
 echo "NPX=$NPX"
 echo "SF=$SF"
 echo "NODE_VERSION=$NODE_VERSION"
-```bash
+```
 
 Capture the four resolved values (`NODE`, `NPM`, `NPX`, `SF`) plus `NODE_VERSION`. Pilot embeds them verbatim into every subagent dispatch prompt under a `## Toolchain (pre-resolved by pilot)` block (see "Toolchain dispatch contract" below). If any `BLOCKED:` line appears, stop pilot here with that message; downstream phases cannot proceed without a valid toolchain.
 
@@ -141,7 +139,7 @@ If `.result[0].value` is empty, null, or missing, list connected scratch orgs:
 
 ```bash
 $SF org list --json | jq '[.result.scratchOrgs[] | select(.connectedStatus == "Connected")]'
-```bash
+```
 
 Three cases:
 
@@ -166,9 +164,8 @@ Three cases:
 
 Every subagent dispatch in Phases 2 (implementers), 3 (testers), 4 (reviewers), and 5 (git-handler) MUST include a `## Toolchain (pre-resolved by pilot)` block in the dispatch prompt, populated with the values captured in Step 3.5. Format:
 
-```
+```markdown
 ## Toolchain (pre-resolved by pilot)
-
 NODE=<resolved-path>
 NPM=<resolved-path>
 NPX=<resolved-path>
@@ -176,7 +173,7 @@ SF=<resolved-path>
 NODE_VERSION=<v20.x.x>
 
 Use these directly — do NOT prepend NVM init. Pilot already activated Node 20 and resolved binaries cross-platform.
-```bash
+```
 
 Subagents call `${NPM}` / `${SF}` / `${NPX}` / `${NODE}` directly. This eliminates the NVM bootstrap dance from every subagent's shell calls, drops permission prompts to short shapes that allowlist trivially, and is cross-platform safe. The block applies to all six worker types: `mcp-implementer` / `apex-implementer` / `agentforce-implementer` / `core-implementer` / `mcp-tester` / `apex-tester` / `agentforce-tester`. Read-only reviewers (`spec-reviewer`, `code-quality-reviewer`, `code-reviewer`) receive the block for uniformity and ignore it.
 
@@ -207,7 +204,7 @@ Create up to seven TodoWrite tasks upfront so the user can see the full workflow
 
 ## Phase 1: Plan
 
-### Gate: User must approve the plan before anything else happens.
+**Gate: User must approve the plan before anything else happens.**
 
 Mark task 1 as `in_progress`.
 
@@ -226,9 +223,9 @@ Combine the two responses for use in Steps 1.2 (cache) and 1.3 (present).
 
 Write the ticket data to:
 
-```
+```text
 ${CLAUDE_PLUGIN_DATA}/tmp/${MAX_SESSION_ID}/{TICKET_ID}-jira-ticket.md
-```bash
+```
 
 Use this format:
 
@@ -266,6 +263,7 @@ The frontmatter is read by `git-handler` for branch naming. The body — descrip
 ### Step 1.3 — Present ticket summary to the user
 
 Show:
+
 - Summary, issue type, fix version
 - Acceptance criteria (verbatim from the description)
 - **Figma links** — scan the description and every comment body for URLs containing `figma.com`. List any found (one per line); if none, state "No Figma links found."
@@ -304,6 +302,7 @@ Produce the plan in the format defined by `max:writing-plans` — read that skil
 Risks specific to maxai (FLS gaps, namespace prefixes, GenAi provider count, permission set updates) belong in either the `Architecture:` line or in the relevant task's checkbox steps as explicit verification actions — not as a separate "Risks" section. Ticket-level stack classification is captured in the `Tech Stack:` header line; per-task stack classification (which drives Phase 2 implementer dispatch and Phase 3 tester dispatch) is captured in each task's `**Stack:**` line.
 
 **Plan-shape rules** (enforced by `max:writing-plans` lint and re-checked by `max:per-task-orchestration` §(a)):
+
 - Every code task (`Stack: mcp | apex | agentforce | core`) has only `Create:` and `Modify:` entries in its `Files:` block.
 - Every test task (`Stack: mcp-test | apex-test | agentforce-test | core-test`) has only `Test:` entries and a `depends_on:` line pointing at its paired code task.
 - A task may not mix code and test entries — split into a paired code + test pair.
@@ -316,6 +315,7 @@ Then tell the user:
 > "Plan written to `{HARNESS_PLAN_PATH}`. Review it and let me know — approve to proceed with implementation, or share changes and I'll update it."
 
 Wait for the user's response:
+
 - **Approved** → proceed with the post-approval handoff below.
 - **Changes requested** → update the plan file at `HARNESS_PLAN_PATH` to reflect the feedback, repeat the message. Stay in plan mode until the user explicitly approves.
 
@@ -330,7 +330,7 @@ On explicit user approval:
    PLAN_PATH="${SESSION_DIR}/${TICKET_ID}-plan.md"
    cat "$HARNESS_PLAN_PATH" > "$PLAN_PATH"
    test -s "$PLAN_PATH" || { echo "BLOCKED: plan copy from $HARNESS_PLAN_PATH to $PLAN_PATH failed or produced an empty file"; exit 1; }
-```bash
+   ```
 
    `Bash(cat:*)` and `Bash(test:*)` are already in pilot's allowed-tools — no new permission grants needed.
 3. From this point on, **`PLAN_PATH` is `${SESSION_DIR}/${TICKET_ID}-plan.md`** — that's the absolute path embedded in every Phase 2/3/4 dispatch prompt. The harness file at `HARNESS_PLAN_PATH` is left in place (the harness manages its own `~/.claude/plans/` directory) and is not referenced past this point.
@@ -342,7 +342,7 @@ Note: the canonical workflow plan lives in `${SESSION_DIR}` (out of the project 
 
 ## Phase 2: Implement (per-task dispatch)
 
-### Auto-gate: Proceed only when every task returns a complete `### Files changed` section.
+**Auto-gate: Proceed only when every task returns a complete `### Files changed` section.**
 
 Mark task 2 as `in_progress`.
 
@@ -367,10 +367,10 @@ Per `max:per-task-orchestration` §(b), build dispatch waves by topological sort
 1. **Parallel sub-wave** — every task in the wave with `parallel_safe: true` and all `depends_on:` satisfied. Issue **one `Agent` tool call per task in a single assistant turn** (multiple tool uses in one message) — Superpowers' `dispatching-parallel-agents` pattern, also used by Phase 4's three-reviewer parallel dispatch. A parallel sub-wave can mix `subagent_type` values across calls (e.g. one `mcp-implementer` call alongside one `apex-implementer` call in the same turn). If the parallel sub-wave has more than 5 tasks, split into batches of up to 5 dispatched sequentially within the wave.
 2. **Sequential remainder** — tasks with `parallel_safe: false`, dispatched one per assistant turn in plan order, after the parallel sub-wave returns successfully.
 
-### Routing — pick subagent_type per task from `task.stack`:
+**Routing — pick subagent_type per task from `task.stack`:**
 
 | `task.stack` | `subagent_type` |
-|---|---|
+| --- | --- |
 | `mcp` | `mcp-implementer` |
 | `apex` | `apex-implementer` |
 | `agentforce` | `agentforce-implementer` |
@@ -395,7 +395,7 @@ Reviewers and git-handler discover the changed files by running `git status --po
 
 ## Phase 3: Tests (per-task tester dispatch)
 
-### Auto-gate: Proceed only when every test task in the plan returns a Pass value (or no test tasks exist).
+**Auto-gate: Proceed only when every test task in the plan returns a Pass value (or no test tasks exist).**
 
 Mark task 3 as `in_progress`.
 
@@ -415,10 +415,10 @@ Per `max:per-task-orchestration` §(b), build dispatch waves from the test-task 
 1. **Parallel sub-wave** — every test task in the wave with `parallel_safe: true` and all `depends_on:` satisfied. Issue **one `Agent` tool call per test task in a single assistant turn** (multiple tool uses in one message). A parallel sub-wave can mix tester subagent_types — e.g., one `mcp-tester` call alongside one `apex-tester` call alongside one `agentforce-tester` call in the same turn. Multiple tasks of the same stack with disjoint `Files:` also fan out as parallel calls (e.g., two `mcp-tester` calls in one turn). If the parallel sub-wave has more than 5 tasks, split into batches of up to 5 dispatched sequentially within the wave.
 2. **Sequential remainder** — tasks with `parallel_safe: false`, dispatched one per assistant turn in plan order, after the parallel sub-wave returns successfully.
 
-### Routing — pick subagent_type per test task from `task.stack`:
+**Routing — pick subagent_type per test task from `task.stack`:**
 
 | `task.stack` | `subagent_type` |
-|---|---|
+| --- | --- |
 | `mcp-test` | `mcp-tester` |
 | `apex-test` | `apex-tester` |
 | `agentforce-test` | `agentforce-tester` |
@@ -431,7 +431,7 @@ Each dispatch uses the prompt template in `max:per-task-orchestration` §(c) —
 Each tester writes a `## Test execution` section with a `Result:` line. Acceptable values per agent:
 
 | Agent | Pass values | Stop values |
-|---|---|---|
+| --- | --- | --- |
 | mcp-tester | `PASSED`, `PASSED_WITH_COVERAGE_GAP` | `FAILED`, `BLOCKED` |
 | apex-tester | `PASSED`, `PASSED_WITH_COVERAGE_GAP` | `FAILED`, `BLOCKED` |
 | agentforce-tester | `PASSED`, `PASSED_WITH_FLAKES` | `FAILED`, `BLOCKED` |
@@ -451,7 +451,7 @@ If no → stop the workflow.
 
 ## Phase 4: Code Review (3 reviewers, parallel)
 
-### Gate: User confirms after all three reviewers return APPROVED. Loop back to the affected code/test tasks up to 2 iterations on any unresolved findings.
+**Gate: User confirms after all three reviewers return APPROVED. Loop back to the affected code/test tasks up to 2 iterations on any unresolved findings.**
 
 Phase 4 runs three reviewers in parallel on every iteration, each with a single, narrow mandate:
 
@@ -518,7 +518,7 @@ In a single assistant turn, issue **three `Agent` tool calls in parallel** — m
 
 ## Phase 4.5: Security Scan (Apex / AgentForce only)
 
-### Gate: this phase runs only when the plan contains at least one `apex` / `agentforce` / `apex-test` / `agentforce-test` task. For all-MCP or all-host-app tickets it auto-skips with a one-line note and proceeds directly to Phase 5.
+**Gate: this phase runs only when the plan contains at least one `apex` / `agentforce` / `apex-test` / `agentforce-test` task. For all-MCP or all-host-app tickets it auto-skips with a one-line note and proceeds directly to Phase 5.**
 
 Phase 4.5 catches Apex/FLS/SOQL findings **before** push, so the post-push CI scanner and claude-auto-review bot rarely see them. It is bounded at 2 iterations, mirroring Phase 4's pattern.
 
@@ -530,6 +530,7 @@ HAS_APEX_OR_AGENTFORCE=$(grep -cE '^\*\*Stack:\*\*[[:space:]]+(apex|agentforce|a
 ```
 
 If `$HAS_APEX_OR_AGENTFORCE` equals `0`:
+
 - Mark task 4.5 as `completed` with note "Skipped — no Apex or AgentForce tasks in plan."
 - Proceed directly to Phase 5.
 
@@ -578,11 +579,12 @@ Parse `## Verdict` from the agent's output. Treat output missing any required he
 
 ## Phase 5: Git Handler
 
-### Auto-gate: Proceed only if pre-commit hooks pass and the push succeeds.
+**Auto-gate: Proceed only if pre-commit hooks pass and the push succeeds.**
 
 Mark task 5 as `in_progress`.
 
 Launch the **git-handler** agent with:
+
 - `TICKET_ID`
 - `REVIEWER_VERDICT = APPROVED` (must literally be the string `APPROVED` — git-handler refuses anything else)
 - `ISSUE_TYPE` from the Jira ticket frontmatter (so the agent picks `bugfix/` vs `feature/` correctly)
@@ -610,28 +612,22 @@ Present the final report in **exactly** this structure:
 **Type:** {issue type}
 
 #### Implementation
-
 {each dispatched implementer's `### Files changed` list, concatenated verbatim — one line per file, grouped by task or stack as the consolidated Phase 2 summary}
 
 #### Tests
-
 {one bullet per dispatched test task, in plan order: `**{task-id} ({task.stack})**: {Result} + one-line coverage summary`. If the plan had no test tasks, write a single line: "No test tasks in plan — Phase 3 skipped."}
 
 #### Code Review — {APPROVED}
-
 {Findings count by severity, verbatim from code-reviewer's `## Findings` section: e.g., "Blocking: 0, Suggested: 2, Nit: 1"}
 
 #### Git
-
 **Branch:** {branch name}
 **Commit:** {SHA + first line of commit message}
 
 ### Create Pull Request
-
 {Bitbucket PR URL — surfaced verbatim from git-handler}
 
 ### Next Steps
-
 1. Open the PR URL above and review the diff
 2. Verify deploy on a connected scratch org if Apex/GenAi changed
 3. Manually test host-app changes on localhost dev server (no automated tests)

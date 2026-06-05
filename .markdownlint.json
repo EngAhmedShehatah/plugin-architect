@@ -4,5 +4,7 @@
   "MD033": false,
   "MD041": false,
   "MD007": false,
-  "MD003": false
+  "MD003": {
+    "style": "atx"
+  }
 }
