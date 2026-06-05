@@ -88,6 +88,18 @@ output:
 - All code blocks must have language tags (`json`, `bash`, etc.)
 - Ensure "output:" schema in frontmatter matches examples in "Output format"
 
+## Output format
+
+Return a single JSON object with the fields declared in frontmatter:
+
+```json
+{
+  "skill_name": "git-detect",
+  "template": "---\nname: git-detect\ndescription: ...\n---\n\n## What this skill does\n...",
+  "validation_checklist": ["Frontmatter present and valid YAML", "Name matches folder name"]
+}
+```
+
 ## Validation checklist
 
 Before finalizing:

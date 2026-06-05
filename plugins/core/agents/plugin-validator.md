@@ -15,7 +15,7 @@ You orchestrate the `plugin-validate` skill. You are responsible for invoking it
 ## What you do
 
 1. Execute the `plugin-validate` skill with the provided inputs
-2. Return the skill's output directly — do not modify, analyze, or reformat it
+2. Return the skill's output directly — do not modify, analyze, reformat, or append prose to it
 
 ## Output format
 
