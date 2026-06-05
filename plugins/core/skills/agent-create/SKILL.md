@@ -115,7 +115,7 @@ Before finalizing:
 - [ ] No generic language ("handles", "manages", "used to")
 - [ ] Single responsibility enforced (no overlap with other agents)
 
-## Output format
+## Example output
 
 Agent markdown with validated frontmatter and codebase-specific system prompt:
 
