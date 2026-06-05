@@ -23,25 +23,21 @@ This skill is fully self-contained and works standalone on any tool. Execute eac
 3. For each file, apply all 8 validation rules (detailed below)
 4. Collect violations and their severity levels
 5. Generate a structured violation report
-6. Return the complete report with both JSON data and any interpretation needed
+6. Return a single JSON object only — do not append prose or a separate text summary
 
 **Error handling:**
 
 - If `plugin_path` does not exist, report this as a critical error and stop
 - If `validator.config.json` cannot be read, use the default rules built into the skill
-- Include a human-readable `summary` field for all tools
 
 You can run this skill entirely on your own — no agent orchestration is required.
 
-**Output interpretation and formatting:**
+**Output formatting:**
 
 - `passed: true` only when there are zero `error`-severity violations
 - Return violations array sorted by severity (errors first) then by file path
-- Include a human-readable `summary` field for all tools
-- After returning the JSON report, format a text summary for developers:
-  - List each `error` violation as a numbered action item that must be fixed before plugin usage
-  - List each `warning` violation separately as a recommendation for review
-  - Do not auto-fix violations — report only
+- Keep the `summary` field inside the JSON object as the only human-readable summary
+- Do not append any prose after the JSON object
 
 ## Validation rules
 

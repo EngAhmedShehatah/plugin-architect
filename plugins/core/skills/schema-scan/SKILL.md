@@ -24,7 +24,6 @@ This skill is fully self-contained and works standalone on any tool. Execute eac
 4. Return the JSON object when complete
 
 You can run this skill entirely on your own — no agent orchestration is required.
-You can run this skill entirely on your own — no agent orchestration is required.
 
 ## Normalization rules
 

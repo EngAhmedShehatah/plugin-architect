@@ -87,6 +87,18 @@ After frontmatter, write a focused system prompt:
 - Never overlap with other agents in the same plugin
 - State clearly: "You do X. You do NOT do Y, Z (that's agent-B's job)"
 
+## Output format
+
+Return a single JSON object with the fields declared in frontmatter:
+
+```json
+{
+  "agent_name": "git-detector",
+  "template": "---\nname: git-detector\ndescription: ...\n---\n\n## Role\n...",
+  "validation_checklist": ["Frontmatter present and valid YAML", "Name matches filename"]
+}
+```
+
 ## Validation checklist
 
 Before finalizing:
@@ -103,7 +115,7 @@ Before finalizing:
 - [ ] No generic language ("handles", "manages", "used to")
 - [ ] Single responsibility enforced (no overlap with other agents)
 
-## Output format
+## Example output
 
 Agent markdown with validated frontmatter and codebase-specific system prompt:
 
