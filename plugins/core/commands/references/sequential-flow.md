@@ -240,7 +240,7 @@ Copy the following scripts from `plugins/core/scripts/` into `marketplace/plugin
 - `session-init.mjs` → `marketplace/plugins/core/scripts/session-init.mjs`
 - `version-bump.mjs` → `marketplace/plugins/core/scripts/version-bump.mjs`
 - `validate-plugins.mjs` → `marketplace/plugins/core/scripts/validate-plugins.mjs`
-- copy the references directory from `plugins/core/references/` into `marketplace/plugins/core/references/` so the bundled reference files ship with the installed plugin
+- `plugins/core/references/` → `marketplace/plugins/core/references/`
 
 ### Generate pre-commit hook
 
