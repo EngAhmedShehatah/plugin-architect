@@ -5,7 +5,7 @@ Add one row per tool and keep the columns in the same order.
 
 | Tool | CLI | Desktop app | VS Code extension | Notes |
 | --- | --- | --- | --- | --- |
-| Claude Code | Pending user-run live install test | Pending user-run live install test | Pending user-run live install test | Install the generated marketplace, then verify the core plugin loads on all three surfaces. |
+| Claude Code | Pending | Pending | Pending | Install plugin-architect from the repo, install the core plugin, then run `/build-plugin` and verify the full flow works on each surface. |
 
 ## Usage pattern for future tools
 

@@ -2,11 +2,7 @@ name: validate
 
 on:
   pull_request:
-    branches:
-      - Multi-Platform
   push:
-    branches:
-      - Multi-Platform
 
 jobs:
   validate:
@@ -30,4 +26,4 @@ jobs:
         run: node plugins/core/scripts/validate-plugins.mjs .
 
       - name: Run markdownlint
-        run: npx markdownlint-cli2 README.md plugins/core/commands/references/agent-flow.md plugins/core/commands/references/sequential-flow.md
+        run: npx markdownlint-cli2 "**/*.md" "#node_modules" "#plans"
