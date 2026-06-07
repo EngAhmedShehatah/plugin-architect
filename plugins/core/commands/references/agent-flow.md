@@ -166,8 +166,6 @@ Ask the user:
 ```text
 Which AI model are you planning to use this plugin against (options):
 - Claude Code
-- OpenCode
-- Codex
 - Copilot
 ```
 
@@ -183,27 +181,18 @@ Fetch:
 
 ## Step 7: Create marketplace skeleton
 
-In the project root folder, create a new folder named 'marketplace' with the skeleton:
+Invoke the `skeleton-builder` agent to create the platform-specific skeleton. Do not build the skeleton inline.
 
-```text
-.
-└── marketplace/
-    ├── .claude-plugin/
-    │   └── plugin.json
-    ├── plugins/
-    │   └── core/
-    │       ├── .claude-plugin/
-    │       │   └── plugin.json
-    │       ├── skills
-    │       ├── agents
-    │       ├── commands
-    │       ├── hooks
-    │       ├── scripts
-    │       └── .mcp.json
-    └── README.md
-```
+Invoke at `../agents/skeleton-builder.md` with:
 
-When writing `marketplace/.claude-plugin/plugin.json` and `marketplace/plugins/core/.claude-plugin/plugin.json`, use the `user_name` and `user_email` values from the `git-detector` output (Step 2) as the author identity — do not use plugin-architect's own metadata.
+- `platform`: normalized target platform from Step 6 (`claude-code` for Claude Code, `github-copilot` for Copilot)
+- `user_name`: `user_name` from the `git-detector` output in Step 2
+- `user_email`: `user_email` from the `git-detector` output in Step 2
+- `surfaces`: optional — omit unless the user explicitly requested a subset of platform surfaces
+
+Use the agent output to write the returned `files` into the project root. The skeleton-builder agent is responsible for selecting the correct checked-in skeleton reference and returning the platform-specific folder structure.
+
+Do not use plugin-architect's own metadata when writing generated manifest files.
 
 ## Step 8: Generate skills and agents (parallel pairs)
 
