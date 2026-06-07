@@ -121,9 +121,11 @@ Wait for confirmation.
 
 ## Step 5: Parallel blueprint search (1 subagent per tech)
 
-Spin one `blueprint-selector` subagent per confirmed skill-worthy tech from step 2.5, all in parallel. Each receives:
+Spin one `blueprint-selector` subagent per confirmed skill-worthy tech from step 2.5, all in parallel. Each receives only:
 
 - `tech` — the tech name
+
+Keep the `blueprint-selector.md` agent file intact so Claude Code can preserve the configured frontmatter `name: blueprint-selector` and `color: yellow` in the UI.
 
 Wait for all subagents to finish.
 

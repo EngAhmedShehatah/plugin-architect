@@ -48,7 +48,7 @@
       "step": 5,
       "action": "parallel-blueprint-select",
       "agent": "../agents/blueprint-selector.md",
-      "note": "Spin one blueprint-selector subagent per detected tech in parallel. Each receives only: tech."
+      "note": "Spin one blueprint-selector subagent per detected tech in parallel. Each receives only: tech. Invoke blueprint-selector.md directly so Claude Code preserves the agent's frontmatter name/color."
     },
     {
       "step": 6,
