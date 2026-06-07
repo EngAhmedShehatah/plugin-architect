@@ -1,5 +1,5 @@
 #!/bin/sh
-# Pre-commit hook: runs plugin validator + markdownlint + version bump before every commit.
+# Pre-commit hook: runs main validator orchestrator + markdownlint + version bump before every commit.
 #
 # One-time setup per developer:
 #   npm install

@@ -247,6 +247,7 @@ Copy the following scripts from `plugins/core/scripts/` into `marketplace/plugin
 - `session-init.mjs` → `marketplace/plugins/core/scripts/session-init.mjs`
 - `version-bump.mjs` → `marketplace/plugins/core/scripts/version-bump.mjs`
 - `validate-plugins.mjs` → `marketplace/plugins/core/scripts/validate-plugins.mjs`
+- `validate-claude-code.mjs` → `marketplace/plugins/core/scripts/validate-claude-code.mjs`
 
 ### Generate pre-commit hook
 

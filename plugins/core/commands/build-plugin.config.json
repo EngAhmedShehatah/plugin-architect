@@ -106,6 +106,7 @@
       "plugins/core/scripts/session-init.mjs",
       "plugins/core/scripts/version-bump.mjs",
       "plugins/core/scripts/validate-plugins.mjs",
+      "plugins/core/scripts/validate-claude-code.mjs",
       "plugins/core/.mcp.json",
       "README.md"
     ]
