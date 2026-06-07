@@ -71,6 +71,8 @@ If the API returns no results, return `found: false` with all other fields as `n
 
 ## Output format
 
+Return ONLY the raw JSON object below — no prose, no explanation, no markdown fences, no preamble. Your entire response must be the JSON and nothing else.
+
 ```json
 {
   "tech": "python",
@@ -97,3 +99,4 @@ If the API response does not contain enough information to construct the full UR
 - Do not interact with the user.
 - Do not fabricate values — only return data present in the API response.
 - NEVER return a root or generic URL like `https://www.skills.sh` as the `url` field — this is always wrong.
+- NEVER include prose, reasoning, or explanation in your response — JSON only.
