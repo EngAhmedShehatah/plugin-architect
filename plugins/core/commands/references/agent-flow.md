@@ -203,6 +203,8 @@ In the project root folder, create a new folder named 'marketplace' with the ske
     └── README.md
 ```
 
+When writing `marketplace/.claude-plugin/plugin.json` and `marketplace/plugins/core/.claude-plugin/plugin.json`, use the `user_name` and `user_email` values from the `git-detector` output (Step 2) as the author identity — do not use plugin-architect's own metadata.
+
 ## Step 8: Generate skills and agents (parallel pairs)
 
 **Important: Do NOT create skills or agents inline. You MUST use the `Agent` tool for every skill and every agent — no exceptions.**
