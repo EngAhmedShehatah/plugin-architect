@@ -27,7 +27,7 @@ echo "🔍 Running plugin validator..."
 node "$ROOT/plugins/core/scripts/validate-plugins.mjs" "$ROOT" || exit 1
 
 echo "🔍 Running markdownlint..."
-cd "$ROOT" && node_modules/.bin/markdownlint-cli2 "**/*.md" "#node_modules" || exit 1
+cd "$ROOT" && node_modules/.bin/markdownlint-cli2 "**/*.md" "#node_modules" "#plans" || exit 1
 
 echo "🔢 Running version bump..."
 node "$ROOT/plugins/core/scripts/version-bump.mjs" || exit 1
