@@ -42,7 +42,7 @@
         { "value": "deep", "descriptionSource": "../modes/deep.md" }
       ],
       "action": "output-full-folder-structure",
-      "note": "After mode selection, output complete folder structure including telemetry, validation, pre-commit hook, CI pipeline. Wait for confirmation."
+      "note": "After mode selection, output complete folder structure including validation, pre-commit hook, CI pipeline. Wait for confirmation."
     },
     {
       "step": 5,

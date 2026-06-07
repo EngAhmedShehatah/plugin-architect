@@ -120,7 +120,7 @@ Provide short descriptions from:
 - `../modes/medium.md`
 - `../modes/deep.md`
 
-Output the updated expected folder structure based on the chosen mode, including telemetry, validation, pre-commit hook, and CI pipeline.
+Output the updated expected folder structure based on the chosen mode, including validation, pre-commit hook, and CI pipeline.
 
 Wait for confirmation.
 
@@ -260,10 +260,6 @@ Generate `marketplace/.githooks/pre-commit` — do not copy ours, generate it fr
 - version bump: `node "$ROOT/plugins/core/scripts/version-bump.mjs"`
 - make it executable (`chmod +x`)
 
-### Copy telemetry
-
-Copy the telemetry/monitors to the respective folder in the marketplace.
-
 ## Step 9: Create pilot command
 
 Create the pilot.md command file at the marketplace/commands folder using the pilot.template.md content fetched in step 6.5.
@@ -274,7 +270,6 @@ Considerations:
 
 - Check if we need to add a toolchain at the preflight
 - Check if we need to pass something from the main tool running this command to the subagents
-- Include telemetry as a mandatory command/skill to run after the work is done so user sees the execution logs and can highlight any concerns (at least for the first try of the pilot command after installation)
 
 ## Step 10: Validate everything
 
@@ -290,11 +285,9 @@ Fix any reported errors before proceeding.
 
 - Instruct user to install the created marketplace using the local path
 - Instruct user to install the plugin(s)
-- Instruct user to try the pilot command against a real task and ask them to report back any errors highlighted by telemetry/monitors at the end of the pilot command
+- Instruct user to try the pilot command against a real task and ask them to report back any errors or unexpected behavior
 
 **If no concerns:**
-
-- Modify the pilot command to ask the user if they want to run the telemetry/monitor command/skill after the work is done or not (no need to eat user's token after the pilot work by force)
 
 **If concerns exist:**
 
