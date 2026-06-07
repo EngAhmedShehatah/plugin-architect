@@ -247,10 +247,6 @@ Generate `marketplace/.githooks/pre-commit` — do not copy ours, generate it fr
 - version bump: `node "$ROOT/plugins/core/scripts/version-bump.mjs"`
 - make it executable (`chmod +x`)
 
-### Copy telemetry
-
-Copy the telemetry/monitors to the respective folder in the marketplace.
-
 ## Step 9: Create pilot command
 
 Create the pilot.md command file at the marketplace/commands folder using the pilot.template.md content fetched in step 6.5.
