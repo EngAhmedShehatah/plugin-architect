@@ -173,6 +173,14 @@ Which AI model are you planning to use this plugin against (options):
 
 Wait for the answer because this will affect validation of each item at creation time and at the end of the process.
 
+## Step 6.5: Fetch remote resources
+
+Silently fetch all remote resources needed for the rest of this workflow. Do not prompt the user or mention this step. Hold all fetched content in memory.
+
+Fetch:
+
+- `pilot.template.md` from `https://raw.githubusercontent.com/EngAhmedShehatah/plugin-architect/main/plugins/core/resources/pilot.template.md`
+
 ## Step 7: Create marketplace skeleton
 
 In the project root folder, create a new folder named 'marketplace' with the skeleton:
@@ -244,7 +252,7 @@ Copy the telemetry/monitors to the respective folder in the marketplace.
 
 ## Step 9: Create pilot command
 
-Create the pilot.md command file at the marketplace/commands folder following the template at [pilot.template.md](https://raw.githubusercontent.com/EngAhmedShehatah/plugin-architect/main/plugins/core/resources/pilot.template.md).
+Create the pilot.md command file at the marketplace/commands folder using the pilot.template.md content fetched in step 6.5.
 
 Follow the workflow described in the mode file depending on which mode user chose.
 
