@@ -210,6 +210,14 @@ In the project root folder, create a new folder named 'marketplace' with the ske
     └── README.md
 ```
 
+When generating the marketplace metadata, read the active user's identity from the *target project* git config and remote, not from plugin-architect's own manifest:
+
+- `git config user.name`
+- `git config user.email`
+- `git remote get-url origin`
+
+Use those values when writing `marketplace/.claude-plugin/plugin.json` so the generated marketplace belongs to the user's project identity.
+
 ## Step 8: Generate skills and agents (sequential pairs)
 
 **Important: Do NOT create skills or agents inline. You MUST use the appropriate method for your platform (may not be Agent tool since you're skill-only, but use whatever creation method is available).**
