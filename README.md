@@ -43,7 +43,9 @@ plugin-architect/
 │   └── workflows/
 │       └── validate.yml            ← CI validation on every PR
 ├── .githooks/
-│   └── pre-commit                  ← version bump + markdown lint + plugin validation
+│   └── pre-commit                  ← version bump + markdown lint + validator orchestrator
+├── testing/
+│   └── surfaces.md                 ← install/test matrix for supported AI tools
 ├── plugins/
 │   └── core/
 │       ├── .claude-plugin/
@@ -73,6 +75,7 @@ plugin-architect/
 │       ├── scripts/
 │       │   ├── session-init.mjs    ← runs on SessionStart hook
 │       │   ├── validate-plugins.mjs
+│       │   ├── validate-claude-code.mjs
 │       │   └── version-bump.mjs    ← auto-bumps patch version on every commit
 │       ├── skills/
 │       │   ├── skill.config.json
@@ -191,7 +194,8 @@ your-project/
     │       ├── scripts/
     │       │   ├── session-init.mjs
     │       │   ├── version-bump.mjs
-    │       │   └── validate-plugins.mjs
+    │       │   ├── validate-plugins.mjs
+    │       │   └── validate-claude-code.mjs
     │       └── .mcp.json
     └── README.md
 ```

@@ -1,6 +1,6 @@
 {
   "name": "core",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "A Claude Code plugin that devs can use to create focused custom plugins for their projects",
   "author": {
     "name": "Ahmed Shehatah",
@@ -14,11 +14,13 @@
     "Plugin"
   ],
   "skills": [
+    "./skills/agent-create",
+    "./skills/blueprint-select",
     "./skills/git-detect",
     "./skills/plugin-validate",
     "./skills/schema-scan",
-    "./skills/tech-stack-detect",
-    "./skills/blueprint-select"
+    "./skills/skill-create",
+    "./skills/tech-stack-detect"
   ],
   "commands": [
     "./commands/build-plugin.md"

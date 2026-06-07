@@ -14,6 +14,31 @@ output:
 
 Reads every artifact inside `plugin_path` and checks it against the rules defined in `validator.config.json`. Returns a structured report of all violations.
 
+## How to execute this skill
+
+This skill is fully self-contained and works standalone on any tool. Execute each step in order using whatever methods are available to you (file reading, etc.).
+
+1. Load the validator config from `config_path` (or use the default path if not provided)
+2. Recursively read all `.md` files under `plugin_path/skills/` and `plugin_path/agents/`
+3. For each file, apply all 8 validation rules (detailed below)
+4. Collect violations and their severity levels
+5. Generate a structured violation report
+6. Return a single JSON object only — do not append prose or a separate text summary
+
+**Error handling:**
+
+- If `plugin_path` does not exist, report this as a critical error and stop
+- If `validator.config.json` cannot be read, use the default rules built into the skill
+
+You can run this skill entirely on your own — no agent orchestration is required.
+
+**Output formatting:**
+
+- `passed: true` only when there are zero `error`-severity violations
+- Return violations array sorted by severity (errors first) then by file path
+- Keep the `summary` field inside the JSON object as the only human-readable summary
+- Do not append any prose after the JSON object
+
 ## Validation rules
 
 ### Rule 1 — Line limit (`max-lines`)

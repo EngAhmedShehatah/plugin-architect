@@ -1,0 +1,275 @@
+#!/usr/bin/env node
+// Claude Code plugin validator.
+// Usage: node validate-claude-code.mjs <marketplace-path>
+//
+// Runs in CI and locally via the main validator orchestrator.
+// Catches the main failure modes that prevent Claude Code plugins from loading:
+//   - invalid JSON in any manifest (plugin, hooks, mcp)
+//   - missing plugin source paths
+//   - missing or malformed YAML frontmatter on agents, commands, skills
+//   - missing required `description` on commands and skills
+//   - malformed `description` shape — accepted forms are plain scalars, block
+//     scalars (`|` / `>`), and double-quoted strings that close on the same line.
+//     Rejected: double-quoted strings that span multiple lines (multi-line quoted).
+//   - broken cross-references in `skills:` frontmatter (agent or command points
+//     to a skill name that doesn't exist under any plugin's skills/ tree)
+
+import fs from 'node:fs';
+import path from 'node:path';
+
+const ROOT = process.argv[2] ? path.resolve(process.argv[2]) : null;
+
+if (!ROOT) {
+  console.error('Usage: node validate-claude-code.mjs <marketplace-path>');
+  process.exit(1);
+}
+
+const MANIFEST = path.join(ROOT, '.claude-plugin', 'plugin.json');
+
+let errors = 0;
+
+const hdr     = (s) => console.log(`\n━━━ ${s} ━━━`);
+const err     = (s) => { console.log(`  ❌ ${s}`); errors++; };
+const ok      = (s) => console.log(`  ✅ ${s}`);
+const rootRel = (p) => path.relative(ROOT, p);
+
+const parseJson = (file) => {
+  try {
+    return { ok: true, data: JSON.parse(fs.readFileSync(file, 'utf8')) };
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
+};
+
+const hasFrontmatter = (file) => {
+  const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/);
+  if (lines[0] !== '---') return false;
+  return lines.filter((l) => l === '---').length >= 2;
+};
+
+const hasDescription = (file) =>
+  /^description:/m.test(fs.readFileSync(file, 'utf8'));
+
+const validateDescriptionShape = (file) => {
+  const content = fs.readFileSync(file, 'utf8');
+  const fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  if (!fmMatch) return { ok: true };
+  const lines = fmMatch[1].split(/\r?\n/);
+  let descIdx = -1;
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].startsWith('description:')) { descIdx = i; break; }
+  }
+  if (descIdx === -1) return { ok: true };
+  const raw = lines[descIdx].slice('description:'.length);
+  const value = raw.replace(/^\s+/, '');
+  if (value === '') return { ok: false, reason: 'description value is empty' };
+  if (value === '|' || value === '>' || value.startsWith('|-') || value.startsWith('>-') ||
+      value.startsWith('|+') || value.startsWith('>+')) {
+    return { ok: true };
+  }
+  if (value.startsWith('"')) {
+    let i = 1;
+    let closed = false;
+    while (i < value.length) {
+      if (value[i] === '\\') { i += 2; continue; }
+      if (value[i] === '"') { closed = true; break; }
+      i++;
+    }
+    if (!closed) {
+      return { ok: false, reason: 'double-quoted description does not close on the same line — use a block scalar (>) instead' };
+    }
+    const trailing = value.substring(i + 1).trim();
+    if (trailing !== '' && !trailing.startsWith('#')) {
+      return { ok: false, reason: `unexpected content after closing quote: ${JSON.stringify(trailing.slice(0, 40))}` };
+    }
+  }
+  return { ok: true };
+};
+
+const isDir  = (p) => fs.existsSync(p) && fs.statSync(p).isDirectory();
+const listMd = (dir) =>
+  fs.readdirSync(dir)
+    .filter((f) => f.endsWith('.md'))
+    .map((f) => path.join(dir, f));
+
+const checkRegistration = (label, fsNames, manifestNames) => {
+  const unregistered = [...fsNames].filter((n) => !manifestNames.has(n));
+  if (unregistered.length > 0) {
+    err(
+      `${label}: ${unregistered.length} item(s) found on disk but missing from plugin.json — ` +
+      `add to "${label}" array: ${unregistered.map((n) => JSON.stringify(n)).join(', ')}`
+    );
+    return false;
+  }
+  return true;
+};
+
+const extractSkillRefs = (file) => {
+  const content = fs.readFileSync(file, 'utf8');
+  const fm = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  if (!fm) return [];
+  const skillsBlock = fm[1].match(/(?:^|\n)skills:\s*\n((?:[ \t]+-[ \t]+.+\n?)+)/);
+  if (!skillsBlock) return [];
+  const refs = [];
+  for (const line of skillsBlock[1].split(/\r?\n/)) {
+    const m = line.match(/^[ \t]+-[ \t]+["']?([A-Za-z][A-Za-z0-9_-]*(?::[A-Za-z][A-Za-z0-9_-]*)?)["']?\s*(?:#.*)?$/);
+    if (m) refs.push(m[1]);
+  }
+  return refs;
+};
+
+const resolveSkillRef = (ref, ownerPluginName) =>
+  ref.includes(':') ? ref : `${ownerPluginName}:${ref}`;
+
+// ==== plugin.json ====
+hdr('Plugin manifest');
+if (!fs.existsSync(MANIFEST)) {
+  err(`plugin.json not found at ${rootRel(MANIFEST)}`);
+  process.exit(1);
+}
+const manifest = parseJson(MANIFEST);
+if (!manifest.ok) {
+  err(`plugin.json is invalid JSON: ${manifest.error}`);
+  process.exit(1);
+}
+ok('plugin.json valid');
+
+const plugins = (manifest.data.plugins || []).map((source) => ({
+  name: path.basename(source.replace(/^\.\//, '')),
+  source,
+}));
+
+// ==== build skill registry ====
+const skillRegistry = new Set();
+for (const { name: pluginName, source } of plugins) {
+  const root = path.join(ROOT, source.replace(/^\.\//, ''));
+  const skillsDir = path.join(root, 'skills');
+  if (!isDir(skillsDir)) continue;
+  for (const e of fs.readdirSync(skillsDir, { withFileTypes: true })) {
+    if (!e.isDirectory()) continue;
+    if (fs.existsSync(path.join(skillsDir, e.name, 'SKILL.md'))) {
+      skillRegistry.add(`${pluginName}:${e.name}`);
+    }
+  }
+}
+
+// ==== per-plugin checks ====
+for (const { name, source } of plugins) {
+  hdr(`Plugin: ${name} (${source})`);
+  const pluginRoot = path.join(ROOT, source.replace(/^\.\//, ''));
+
+  if (!isDir(pluginRoot)) {
+    err(`missing plugin dir: ${rootRel(pluginRoot)}`);
+    continue;
+  }
+
+  const pluginManifest = path.join(pluginRoot, '.claude-plugin', 'plugin.json');
+  if (!fs.existsSync(pluginManifest)) {
+    err(`missing ${rootRel(pluginManifest)}`);
+    continue;
+  }
+  const pm = parseJson(pluginManifest);
+  if (!pm.ok) {
+    err(`invalid JSON: ${rootRel(pluginManifest)} (${pm.error})`);
+    continue;
+  }
+  if (!pm.data.name) {
+    err(`plugin.json missing 'name': ${rootRel(pluginManifest)}`);
+    continue;
+  }
+  ok(`plugin.json: name=${pm.data.name}`);
+
+  // Agents
+  const agentsDir = path.join(pluginRoot, 'agents');
+  if (isDir(agentsDir)) {
+    for (const f of listMd(agentsDir)) {
+      if (!hasFrontmatter(f)) { err(`agent missing or malformed frontmatter: ${rootRel(f)}`); continue; }
+      const descCheck = validateDescriptionShape(f);
+      if (!descCheck.ok) { err(`agent ${path.basename(f)}: ${descCheck.reason}`); continue; }
+      const refs = extractSkillRefs(f);
+      const broken = refs.filter((r) => !skillRegistry.has(resolveSkillRef(r, pm.data.name)));
+      if (broken.length > 0) {
+        err(`agent ${path.basename(f)}: unknown skill ref(s): ${broken.join(', ')}`);
+      } else {
+        const tag = refs.length > 0 ? ` (${refs.length} skill ref${refs.length === 1 ? '' : 's'} ✓)` : '';
+        ok(`agent: ${path.basename(f)}${tag}`);
+      }
+    }
+    const fsAgentNames       = new Set(listMd(agentsDir).map((f) => path.basename(f)));
+    const manifestAgentNames = new Set((pm.data.agents || []).map((a) => path.basename(a)));
+    checkRegistration('agents', fsAgentNames, manifestAgentNames);
+  }
+
+  // Commands
+  const commandsDir = path.join(pluginRoot, 'commands');
+  if (isDir(commandsDir)) {
+    for (const f of listMd(commandsDir)) {
+      if (!hasFrontmatter(f)) { err(`command missing frontmatter: ${rootRel(f)}`); continue; }
+      if (!hasDescription(f)) { err(`command missing description: ${rootRel(f)}`); continue; }
+      const descCheck = validateDescriptionShape(f);
+      if (!descCheck.ok) { err(`command ${path.basename(f)}: ${descCheck.reason}`); continue; }
+      const refs = extractSkillRefs(f);
+      const broken = refs.filter((r) => !skillRegistry.has(resolveSkillRef(r, pm.data.name)));
+      if (broken.length > 0) {
+        err(`command ${path.basename(f)}: unknown skill ref(s): ${broken.join(', ')}`);
+      } else {
+        const tag = refs.length > 0 ? ` (${refs.length} skill ref${refs.length === 1 ? '' : 's'} ✓)` : '';
+        ok(`command: ${path.basename(f)}${tag}`);
+      }
+    }
+    const fsCommandNames       = new Set(listMd(commandsDir).map((f) => path.basename(f)));
+    const manifestCommandNames = new Set((pm.data.commands || []).map((c) => path.basename(c)));
+    checkRegistration('commands', fsCommandNames, manifestCommandNames);
+  }
+
+  // Skills
+  const skillsDir = path.join(pluginRoot, 'skills');
+  if (isDir(skillsDir)) {
+    const subdirs = fs.readdirSync(skillsDir, { withFileTypes: true })
+      .filter((e) => e.isDirectory())
+      .map((e) => path.join(skillsDir, e.name));
+    for (const sd of subdirs) {
+      const skillFile = path.join(sd, 'SKILL.md');
+      if (!fs.existsSync(skillFile)) continue;
+      if (!hasFrontmatter(skillFile)) { err(`skill missing frontmatter: ${rootRel(skillFile)}`); continue; }
+      if (!hasDescription(skillFile)) { err(`skill missing description: ${rootRel(skillFile)}`); continue; }
+      const descCheck = validateDescriptionShape(skillFile);
+      if (!descCheck.ok) { err(`skill ${path.basename(sd)}: ${descCheck.reason}`); continue; }
+      ok(`skill: ${path.basename(sd)}`);
+    }
+    const fsSkillNames = new Set(
+      fs.readdirSync(skillsDir, { withFileTypes: true })
+        .filter((e) => e.isDirectory() && fs.existsSync(path.join(skillsDir, e.name, 'SKILL.md')))
+        .map((e) => e.name)
+    );
+    const manifestSkillNames = new Set(
+      (pm.data.skills || []).map((s) => path.basename(s.replace(/\/$/, '')))
+    );
+    checkRegistration('skills', fsSkillNames, manifestSkillNames);
+  }
+
+  // Hooks JSON
+  const hooksJson = path.join(pluginRoot, 'hooks', 'hooks.json');
+  if (fs.existsSync(hooksJson)) {
+    const hj = parseJson(hooksJson);
+    if (hj.ok) ok('hooks.json valid JSON');
+    else err(`hooks.json invalid JSON: ${rootRel(hooksJson)} (${hj.error})`);
+  }
+
+  // MCP JSON
+  const mcpJson = path.join(pluginRoot, '.mcp.json');
+  if (fs.existsSync(mcpJson)) {
+    const mj = parseJson(mcpJson);
+    if (mj.ok) ok('.mcp.json valid JSON');
+    else err(`.mcp.json invalid JSON: ${rootRel(mcpJson)} (${mj.error})`);
+  }
+}
+
+hdr('Summary');
+if (errors === 0) {
+  console.log('✅ All plugins validated successfully');
+  process.exit(0);
+} else {
+  console.log(`❌ Validation failed with ${errors} error(s)`);
+  process.exit(1);
+}
