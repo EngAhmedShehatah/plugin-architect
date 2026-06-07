@@ -249,15 +249,6 @@ Copy the following scripts from `plugins/core/scripts/` into `marketplace/plugin
 - `validate-plugins.mjs` → `marketplace/plugins/core/scripts/validate-plugins.mjs`
 - `validate-claude-code.mjs` → `marketplace/plugins/core/scripts/validate-claude-code.mjs`
 
-### Generate pre-commit hook
-
-Generate `marketplace/.githooks/pre-commit` — do not copy ours, generate it fresh using the marketplace plugin folder name so the paths are correct:
-
-- validator: `node "$ROOT/plugins/core/scripts/validate-plugins.mjs" "$ROOT"`
-- markdownlint: same as ours
-- version bump: `node "$ROOT/plugins/core/scripts/version-bump.mjs"`
-- make it executable (`chmod +x`)
-
 ### Copy telemetry
 
 Copy the telemetry/monitors to the respective folder in the marketplace.
