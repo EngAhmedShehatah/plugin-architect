@@ -115,7 +115,7 @@ Provide short descriptions from:
 - `../modes/medium.md`
 - `../modes/deep.md`
 
-Output the updated expected folder structure based on the chosen mode, including telemetry, validation, pre-commit hook, and CI pipeline.
+Output the updated expected folder structure based on the chosen mode, including validation and CI pipeline.
 
 Wait for confirmation.
 
@@ -203,6 +203,8 @@ In the project root folder, create a new folder named 'marketplace' with the ske
     └── README.md
 ```
 
+When writing `marketplace/.claude-plugin/plugin.json` and `marketplace/plugins/core/.claude-plugin/plugin.json`, use the `user_name` and `user_email` values from the `git-detector` output (Step 2) as the author identity — do not use plugin-architect's own metadata.
+
 ## Step 8: Generate skills and agents (parallel pairs)
 
 **Important: Do NOT create skills or agents inline. You MUST use the `Agent` tool for every skill and every agent — no exceptions.**
@@ -238,19 +240,6 @@ Copy the following scripts from `plugins/core/scripts/` into `marketplace/plugin
 - `validate-plugins.mjs` → `marketplace/plugins/core/scripts/validate-plugins.mjs`
 - `validate-claude-code.mjs` → `marketplace/plugins/core/scripts/validate-claude-code.mjs`
 
-### Generate pre-commit hook
-
-Generate `marketplace/.githooks/pre-commit` — do not copy ours, generate it fresh using the marketplace plugin folder name so the paths are correct:
-
-- validator: `node "$ROOT/plugins/core/scripts/validate-plugins.mjs" "$ROOT"`
-- markdownlint: same as ours
-- version bump: `node "$ROOT/plugins/core/scripts/version-bump.mjs"`
-- make it executable (`chmod +x`)
-
-### Copy telemetry
-
-Copy the telemetry/monitors to the respective folder in the marketplace.
-
 ## Step 9: Create pilot command
 
 Create the pilot.md command file at the marketplace/commands folder using the pilot.template.md content fetched in step 6.5.
@@ -261,7 +250,6 @@ Considerations:
 
 - Check if we need to add a toolchain at the preflight
 - Check if we need to pass something from the main agent running this command to the subagents
-- Include telemetry as a mandatory command/skill/agent to spin after the work is done so user sees the subagents logs and can highlight any concerns (at least for the first try of the pilot command after installation)
 
 ## Step 10: Validate everything
 
@@ -277,11 +265,9 @@ Fix any reported errors before proceeding.
 
 - Instruct user to install the created marketplace using the local path
 - Instruct user to install the plugin(s)
-- Instruct user to try the pilot command against a real task and ask them to report back any errors highlighted by telemetry/monitors at the end of the pilot command
+- Instruct user to try the pilot command against a real task and ask them to report back any errors or unexpected behavior
 
 **If no concerns:**
-
-- Modify the pilot command to ask the user if they want to run the telemetry/monitor command/skill/agent after the work is done or not (no need to eat user's token after the pilot work by force)
 
 **If concerns exist:**
 

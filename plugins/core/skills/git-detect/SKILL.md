@@ -9,6 +9,8 @@ output:
   branch_model: string — the detected branching strategy in kebab-case (e.g. gitflow, trunk, github-flow)
   ci_provider: string — the detected CI/CD provider in kebab-case (e.g. github-actions, gitlab-ci, circleci)
   default_branch: string — the default branch name (e.g. main, master, develop)
+  user_name: string — the git user name from the target project config, or "unknown" if not set
+  user_email: string — the git user email from the target project config, or "unknown" if not set
 ---
 
 ## What this skill does
@@ -68,7 +70,13 @@ Inspect branch names via `git -C <project_path> branch -a`. Use your understandi
 
 If a recognizable strategy is detected that doesn't match these examples, name it accurately in kebab-case.
 
-### 4. CI provider
+### 4. User identity
+
+Run `git -C <project_path> config user.name` and `git -C <project_path> config user.email`.
+
+If either command returns nothing or fails: use `"unknown"` for that field.
+
+### 5. CI provider
 
 Check for CI config files under `project_path`. Common examples — detect any CI system you recognize:
 
@@ -91,7 +99,9 @@ First match wins. No CI config found → `none`.
   "host": "github",
   "branch_model": "github-flow",
   "ci_provider": "github-actions",
-  "default_branch": "main"
+  "default_branch": "main",
+  "user_name": "Jane Doe",
+  "user_email": "jane@example.com"
 }
 ```
 

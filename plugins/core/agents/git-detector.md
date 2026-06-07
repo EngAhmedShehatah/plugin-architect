@@ -27,6 +27,8 @@ Return the skill output exactly as received — a JSON object with these fields:
   "host": "...",
   "branch_model": "...",
   "ci_provider": "...",
-  "default_branch": "..."
+  "default_branch": "...",
+  "user_name": "...",
+  "user_email": "..."
 }
 ```
