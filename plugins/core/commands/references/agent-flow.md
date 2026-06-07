@@ -115,7 +115,7 @@ Provide short descriptions from:
 - `../modes/medium.md`
 - `../modes/deep.md`
 
-Output the updated expected folder structure based on the chosen mode, including validation, pre-commit hook, and CI pipeline.
+Output the updated expected folder structure based on the chosen mode, including validation and CI pipeline.
 
 Wait for confirmation.
 
@@ -239,15 +239,6 @@ Copy the following scripts from `plugins/core/scripts/` into `marketplace/plugin
 - `version-bump.mjs` → `marketplace/plugins/core/scripts/version-bump.mjs`
 - `validate-plugins.mjs` → `marketplace/plugins/core/scripts/validate-plugins.mjs`
 - `validate-claude-code.mjs` → `marketplace/plugins/core/scripts/validate-claude-code.mjs`
-
-### Generate pre-commit hook
-
-Generate `marketplace/.githooks/pre-commit` — do not copy ours, generate it fresh using the marketplace plugin folder name so the paths are correct:
-
-- validator: `node "$ROOT/plugins/core/scripts/validate-plugins.mjs" "$ROOT"`
-- markdownlint: same as ours
-- version bump: `node "$ROOT/plugins/core/scripts/version-bump.mjs"`
-- make it executable (`chmod +x`)
 
 ## Step 9: Create pilot command
 

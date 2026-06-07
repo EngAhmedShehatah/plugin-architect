@@ -14,7 +14,7 @@ Most AI coding plugins are generic. They work for any project, which means they'
 2. **You choose the depth** — Light, Medium, or Deep (more on this below)
 3. **Searches for blueprints** — finds the best community skills per detected tech
 4. **Rewrites everything** — generates skills and agents focused on _your_ actual codebase, not a hypothetical one
-5. **Validates and ships** — runs validation, wires up pre-commit hooks, and guides you through install → test → publish
+5. **Validates and ships** — runs validation and guides you through install → test → publish
 
 ---
 
