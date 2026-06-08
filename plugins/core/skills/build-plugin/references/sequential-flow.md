@@ -8,7 +8,7 @@ platforms: ["Copilot", "Cursor", "Codex"]
 
 This is the detailed flow for **Skill-only platforms** (Copilot, Cursor, Codex).
 
-Use this if you started from `build-plugin.md` and confirmed you do NOT have Agent capability.
+Use this if you started from the build-plugin skill and confirmed you do NOT have Agent capability.
 
 The workflow is identical to `agent-flow.md` (same 13 steps, same outputs), but **execution is sequential** because you cannot spawn parallel subagents.
 
@@ -116,9 +116,9 @@ Next we need to know which mode you want to build your plugin with (options):
 
 Provide short descriptions from:
 
-- `../modes/light.md`
-- `../modes/medium.md`
-- `../modes/deep.md`
+- `../../modes/light.md`
+- `../../modes/medium.md`
+- `../../modes/deep.md`
 
 Output the updated expected folder structure based on the chosen mode, including validation and CI pipeline.
 
@@ -172,10 +172,7 @@ Ask the user:
 ```text
 Which AI model are you planning to use this plugin against (options):
 - Copilot
-- Cursor
-- Codex
 - Claude Code
-- OpenCode
 ```
 
 Wait for the answer because this will affect validation of each item at creation time and at the end of the process.
@@ -190,27 +187,18 @@ Fetch:
 
 ## Step 7: Create marketplace skeleton
 
-In the project root folder, create a new folder named 'marketplace' with the skeleton:
+Execute the `skeleton-build` skill to create the platform-specific skeleton. Do not build the skeleton inline.
 
-```text
-.
-└── marketplace/
-    ├── .claude-plugin/
-    │   └── plugin.json
-    ├── plugins/
-    │   └── core/
-    │       ├── .claude-plugin/
-    │       │   └── plugin.json
-    │       ├── skills
-    │       ├── agents
-    │       ├── commands
-    │       ├── hooks
-    │       ├── scripts
-    │       └── .mcp.json
-    └── README.md
-```
+Use the `skeleton-build` skill with:
 
-When writing `marketplace/.claude-plugin/plugin.json` and `marketplace/plugins/core/.claude-plugin/plugin.json`, use the `user_name` and `user_email` values from the `git-detect` skill output (Step 2) as the author identity — do not use plugin-architect's own metadata.
+- `platform`: normalized target platform from Step 6 (`claude-code` for Claude Code, `github-copilot` for Copilot)
+- `user_name`: `user_name` from the `git-detect` skill output in Step 2
+- `user_email`: `user_email` from the `git-detect` skill output in Step 2
+- `surfaces`: optional — omit unless the user explicitly requested a subset of platform surfaces
+
+Use the skill output to write the returned `files` into the project root. The skeleton-build skill is responsible for selecting the correct checked-in skeleton reference and returning the platform-specific folder structure.
+
+Do not use plugin-architect's own metadata when writing generated manifest files.
 
 ## Step 8: Generate skills and agents (sequential pairs)
 

@@ -5,9 +5,9 @@
       "step": 2,
       "action": "parallel-scan",
       "agents": [
-        { "name": "git-detector", "path": "../agents/git-detector.md" },
-        { "name": "schema-scanner", "path": "../agents/schema-scanner.md" },
-        { "name": "tech-stack-detector", "path": "../agents/tech-stack-detector.md" }
+        { "name": "git-detector", "path": "../../agents/git-detector.md" },
+        { "name": "schema-scanner", "path": "../../agents/schema-scanner.md" },
+        { "name": "tech-stack-detector", "path": "../../agents/tech-stack-detector.md" }
       ]
     },
     {
@@ -37,9 +37,9 @@
       "id": "mode-selection",
       "prompt": "Which mode do you want to build your plugin with?",
       "options": [
-        { "value": "light", "descriptionSource": "../modes/light.md" },
-        { "value": "medium", "descriptionSource": "../modes/medium.md" },
-        { "value": "deep", "descriptionSource": "../modes/deep.md" }
+        { "value": "light", "descriptionSource": "../../modes/light.md" },
+        { "value": "medium", "descriptionSource": "../../modes/medium.md" },
+        { "value": "deep", "descriptionSource": "../../modes/deep.md" }
       ],
       "action": "output-full-folder-structure",
       "note": "After mode selection, output complete folder structure including validation and CI pipeline. Wait for confirmation."
@@ -47,7 +47,7 @@
     {
       "step": 5,
       "action": "parallel-blueprint-select",
-      "agent": "../agents/blueprint-selector.md",
+      "agent": "../../agents/blueprint-selector.md",
       "note": "Spin one blueprint-selector subagent per detected tech in parallel. Each receives only: tech."
     },
     {

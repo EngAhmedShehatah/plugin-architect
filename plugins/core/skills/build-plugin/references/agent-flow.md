@@ -8,7 +8,7 @@ platforms: ["Claude Code", "OpenCode"]
 
 This is the detailed flow for **Agent-capable platforms** (Claude Code, OpenCode).
 
-Use this if you started from `build-plugin.md` and confirmed you have Agent capability.
+Use this if you started from the build-plugin skill and confirmed you have Agent capability.
 
 ## Conventions
 
@@ -23,9 +23,9 @@ Use this if you started from `build-plugin.md` and confirmed you have Agent capa
 
 Spin up 3 subagents in parallel to scan the codebase:
 
-1. git-detector agent at '../agents/git-detector.md'
-2. schema-scanner agent at '../agents/schema-scanner.md'
-3. tech-stack-detector agent at '../agents/tech-stack-detector.md'
+1. git-detector agent at '../../agents/git-detector.md'
+2. schema-scanner agent at '../../agents/schema-scanner.md'
+3. tech-stack-detector agent at '../../agents/tech-stack-detector.md'
 
 Once they finish, check each agent's output report and print it out to the user.
 
@@ -111,9 +111,9 @@ Next we need to know which mode you want to build your plugin with (options):
 
 Provide short descriptions from:
 
-- `../modes/light.md`
-- `../modes/medium.md`
-- `../modes/deep.md`
+- `../../modes/light.md`
+- `../../modes/medium.md`
+- `../../modes/deep.md`
 
 Output the updated expected folder structure based on the chosen mode, including validation and CI pipeline.
 
@@ -166,8 +166,6 @@ Ask the user:
 ```text
 Which AI model are you planning to use this plugin against (options):
 - Claude Code
-- OpenCode
-- Codex
 - Copilot
 ```
 
@@ -183,27 +181,18 @@ Fetch:
 
 ## Step 7: Create marketplace skeleton
 
-In the project root folder, create a new folder named 'marketplace' with the skeleton:
+Invoke the `skeleton-builder` agent to create the platform-specific skeleton. Do not build the skeleton inline.
 
-```text
-.
-└── marketplace/
-    ├── .claude-plugin/
-    │   └── plugin.json
-    ├── plugins/
-    │   └── core/
-    │       ├── .claude-plugin/
-    │       │   └── plugin.json
-    │       ├── skills
-    │       ├── agents
-    │       ├── commands
-    │       ├── hooks
-    │       ├── scripts
-    │       └── .mcp.json
-    └── README.md
-```
+Invoke at `../../agents/skeleton-builder.md` with:
 
-When writing `marketplace/.claude-plugin/plugin.json` and `marketplace/plugins/core/.claude-plugin/plugin.json`, use the `user_name` and `user_email` values from the `git-detector` output (Step 2) as the author identity — do not use plugin-architect's own metadata.
+- `platform`: normalized target platform from Step 6 (`claude-code` for Claude Code, `github-copilot` for Copilot)
+- `user_name`: `user_name` from the `git-detector` output in Step 2
+- `user_email`: `user_email` from the `git-detector` output in Step 2
+- `surfaces`: optional — omit unless the user explicitly requested a subset of platform surfaces
+
+Use the agent output to write the returned `files` into the project root. The skeleton-builder agent is responsible for selecting the correct checked-in skeleton reference and returning the platform-specific folder structure.
+
+Do not use plugin-architect's own metadata when writing generated manifest files.
 
 ## Step 8: Generate skills and agents (parallel pairs)
 
@@ -213,7 +202,7 @@ For each skill/agent pair, invoke both subagents in parallel using the `Agent` t
 
 ### skill-creator agent
 
-Invoke at '../agents/skill-creator.md' with:
+Invoke at '../../agents/skill-creator.md' with:
 
 - `output path`: full path where the skill file must be written (e.g. `marketplace/plugins/core/skills/<skill-name>/SKILL.md`)
 - `blueprint`: inline description of what this skill must do, its scope, and constraints (derived from the blueprint content fetched in step 5)
@@ -222,7 +211,7 @@ Invoke at '../agents/skill-creator.md' with:
 
 ### agent-creator agent
 
-Invoke at '../agents/agent-creator.md' with:
+Invoke at '../../agents/agent-creator.md' with:
 
 - `output path`: full path where the agent file must be written (e.g. `marketplace/plugins/core/agents/<agent-name>.md`)
 - `blueprint`: inline description of the agent's role, tools it needs, and constraints (derived from the blueprint content fetched in step 5)
