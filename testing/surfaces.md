@@ -5,7 +5,8 @@ Add one row per tool and keep the columns in the same order.
 
 | Tool | CLI | Desktop app | VS Code extension | Notes |
 | --- | --- | --- | --- | --- |
-| Claude Code | ✅ Verified | ✅ Verified | ✅ Verified | Install plugin-architect from the repo, install the core plugin, then run `/build-plugin` and verify the full flow works on each surface. |
+| Claude Code | ✅ Verified | ✅ Verified | ✅ Verified | Install plugin-architect from the repo, install the core plugin, then invoke the build-plugin skill and verify the full flow works on each surface. |
+| GitHub Copilot | ⏳ Pending | N/A | ⏳ Pending | Clone the repo, open in VS Code with Copilot enabled. Invoke the build-plugin skill by describing what you want. Verify the sequential skill flow completes end-to-end. |
 
 ## Usage pattern for future tools
 

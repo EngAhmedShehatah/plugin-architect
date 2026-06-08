@@ -131,10 +131,9 @@ plugin-architect/
 
 Installation varies by platform.
 
-<details>
-<summary><b>Claude Code</b> — plugin install</summary>
+### Claude Code — plugin install
 
-### Step 1 — Install the marketplace
+#### Step 1 — Install the marketplace
 
 ```bash
 claude plugin install plugin-architect@https://github.com/EngAhmedShehatah/plugin-architect
@@ -147,13 +146,13 @@ git clone https://github.com/EngAhmedShehatah/plugin-architect.git
 claude plugin install ./plugin-architect --scope project
 ```
 
-### Step 2 — Install the core plugin
+#### Step 2 — Install the core plugin
 
 ```bash
 claude plugin install core@plugin-architect
 ```
 
-### Step 3 — Verify
+#### Step 3 — Verify
 
 ```bash
 claude plugin list
@@ -161,10 +160,7 @@ claude plugin list
 
 You should see `plugin-architect` marketplace and `core` plugin listed.
 
-</details>
-
-<details>
-<summary><b>GitHub Copilot</b> — instructions + skills</summary>
+### GitHub Copilot — instructions + skills
 
 Clone the repo:
 
@@ -174,16 +170,13 @@ git clone https://github.com/EngAhmedShehatah/plugin-architect.git
 
 Open the folder in VS Code with GitHub Copilot enabled, or use the Copilot CLI inside the project directory. Copilot will read `AGENTS.md` and `plugin.json` to load the workspace-level instructions and available skills.
 
-</details>
-
 ---
 
 ## Usage
 
 Usage depends on your platform. The `build-plugin` skill guides you through the full journey.
 
-<details>
-<summary><b>Claude Code</b> — skill invocation</summary>
+### Claude Code — skill invocation
 
 Navigate to your project root and describe what you want:
 
@@ -210,10 +203,7 @@ Claude Code will identify the `build-plugin` skill from the manifest and execute
 | 12   | Helps you publish to your own GitHub repo                                     |
 | 13   | Summary                                                                       |
 
-</details>
-
-<details>
-<summary><b>GitHub Copilot</b> — skill invocation</summary>
+### GitHub Copilot — skill invocation
 
 Navigate to your project root and ask Copilot to build a plugin:
 
@@ -240,16 +230,13 @@ Copilot will identify the `build-plugin` skill from the manifest and execute the
 | 12   | Helps you publish to your own GitHub repo                                     |
 | 13   | Summary                                                                       |
 
-</details>
-
 ---
 
 ## What gets generated in your project
 
 After the build-plugin skill completes, your project will contain a generated `marketplace/` folder. The exact structure depends on the target platform.
 
-<details>
-<summary><b>Claude Code</b> — generated marketplace</summary>
+### Claude Code — generated marketplace
 
 ```text
 your-project/
@@ -274,10 +261,7 @@ your-project/
     └── README.md
 ```
 
-</details>
-
-<details>
-<summary><b>GitHub Copilot</b> — generated marketplace</summary>
+### GitHub Copilot — generated marketplace
 
 ```text
 your-project/
@@ -292,8 +276,6 @@ your-project/
     ├── .mcp.json
     └── README.md
 ```
-
-</details>
 
 ---
 
