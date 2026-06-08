@@ -2,7 +2,7 @@
 
 > **Don't install generic plugins. Install yours.**
 
-A smart plugin that turns generic AI coding tooling into something built specifically for your project — your stack, your conventions, your workflow.
+A smart meta-plugin that turns generic AI coding assistants into something built specifically for your project — your stack, your conventions, your workflow. Supports Claude Code (agents) and GitHub Copilot (skills).
 
 ---
 
@@ -32,10 +32,12 @@ Most AI coding plugins are generic. They work for any project, which means they'
 
 ```text
 plugin-architect/
+├── AGENTS.md                       ← Copilot agent instructions
+├── plugin.json                     ← Copilot marketplace manifest
 ├── .claude-plugin/
 │   ├── marketplace.json
 │   ├── plugin.config.json          ← $schema reference
-│   └── plugin.json                 ← marketplace manifest
+│   └── plugin.json                 ← Claude Code marketplace manifest
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
 │   │   ├── bug_report.md
@@ -54,40 +56,53 @@ plugin-architect/
 │       ├── .mcp.json               ← MCP server config
 │       ├── agents/
 │       │   ├── agent.config.json   ← frontmatter schema reference
-│       │   ├── agent-creator.md    ← writes agent files directly
+│       │   ├── agent-creator.md
 │       │   ├── blueprint-selector.md
 │       │   ├── git-detector.md
 │       │   ├── plugin-validator.md
 │       │   ├── schema-scanner.md
-│       │   ├── skill-creator.md    ← writes SKILL.md files directly
+│       │   ├── skeleton-builder.md
+│       │   ├── skill-creator.md
 │       │   └── tech-stack-detector.md
-│       ├── commands/
-│       │   ├── build-plugin.config.json
-│       │   └── build-plugin.md     ← main orchestrator command (13 steps)
 │       ├── hooks/
 │       │   └── config.json
 │       ├── modes/
+│       │   ├── deep.md
 │       │   ├── light.md
-│       │   ├── medium.md
-│       │   └── deep.md
+│       │   └── medium.md
 │       ├── resources/
 │       │   └── pilot.template.md   ← template for generated pilot command
 │       ├── scripts/
 │       │   ├── session-init.mjs    ← runs on SessionStart hook
 │       │   ├── validate-plugins.mjs
 │       │   ├── validate-claude-code.mjs
+│       │   ├── validate-github-copilot.mjs
 │       │   └── version-bump.mjs    ← auto-bumps patch version on every commit
 │       ├── skills/
 │       │   ├── skill.config.json
+│       │   ├── agent-create/
+│       │   │   └── SKILL.md
 │       │   ├── blueprint-select/
 │       │   │   ├── SKILL.md
 │       │   │   └── resources/
 │       │   │       └── urls.json
+│       │   ├── build-plugin/
+│       │   │   ├── SKILL.md        ← main orchestrator (skill format)
+│       │   │   ├── build-plugin.config.json
+│       │   │   └── references/
+│       │   │       ├── agent-flow.md
+│       │   │       └── sequential-flow.md
 │       │   ├── git-detect/
 │       │   │   └── SKILL.md
 │       │   ├── plugin-validate/
 │       │   │   └── SKILL.md
 │       │   ├── schema-scan/
+│       │   │   └── SKILL.md
+│       │   ├── skeleton-build/
+│       │   │   ├── SKILL.md
+│       │   │   ├── claude-code.skeleton.md
+│       │   │   └── github-copilot.skeleton.md
+│       │   ├── skill-create/
 │       │   │   └── SKILL.md
 │       │   └── tech-stack-detect/
 │       │       └── SKILL.md
@@ -106,12 +121,18 @@ plugin-architect/
 
 ## Requirements
 
-- Claude Code **v2.1.105** or later
+- **Claude Code** v2.1.105 or later (for agents, agents are not required on skill-only platforms)
+- **GitHub Copilot** in VS Code or CLI (for skill-only usage)
 - Node.js **v18** or later
 
 ---
 
 ## Installation
+
+Installation varies by platform.
+
+<details>
+<summary><b>Claude Code</b> — plugin install</summary>
 
 ### Step 1 — Install the marketplace
 
@@ -132,7 +153,7 @@ claude plugin install ./plugin-architect --scope project
 claude plugin install core@plugin-architect
 ```
 
-### Step 3 — Verify installation
+### Step 3 — Verify
 
 ```bash
 claude plugin list
@@ -140,17 +161,37 @@ claude plugin list
 
 You should see `plugin-architect` marketplace and `core` plugin listed.
 
+</details>
+
+<details>
+<summary><b>GitHub Copilot</b> — instructions + skills</summary>
+
+Clone the repo:
+
+```bash
+git clone https://github.com/EngAhmedShehatah/plugin-architect.git
+```
+
+Open the folder in VS Code with GitHub Copilot enabled, or use the Copilot CLI inside the project directory. Copilot will read `AGENTS.md` and `plugin.json` to load the workspace-level instructions and available skills.
+
+</details>
+
 ---
 
 ## Usage
 
-Navigate to the root of your project and run:
+Usage depends on your platform. The `build-plugin` skill guides you through the full journey.
+
+<details>
+<summary><b>Claude Code</b> — skill invocation</summary>
+
+Navigate to your project root and describe what you want:
 
 ```text
-/build-plugin
+Build a plugin for this project
 ```
 
-The command will guide you through the full journey interactively:
+Claude Code will identify the `build-plugin` skill from the manifest and execute the agent-based flow.
 
 | Step | What happens                                                                  |
 | ---- | ----------------------------------------------------------------------------- |
@@ -160,7 +201,7 @@ The command will guide you through the full journey interactively:
 | 3    | Asks monorepo questions if needed, shows expected folder structure            |
 | 4    | You choose Light / Medium / Deep mode                                         |
 | 5    | Searches for blueprints per tech, shows a table with ctrl+clickable links     |
-| 6    | You choose your AI tool (Claude Code / Opencode / Codex / Copilot)            |
+| 6    | You choose your target AI tool                                                |
 | 7    | Scaffolds the marketplace folder structure in your project                    |
 | 8    | Generates skills and agents pair by pair using your selected blueprints       |
 | 9    | Creates a `pilot.md` command tailored to your mode and stack                  |
@@ -169,19 +210,52 @@ The command will guide you through the full journey interactively:
 | 12   | Helps you publish to your own GitHub repo                                     |
 | 13   | Summary                                                                       |
 
+</details>
+
+<details>
+<summary><b>GitHub Copilot</b> — skill invocation</summary>
+
+Navigate to your project root and ask Copilot to build a plugin:
+
+```text
+Build a plugin for this project
+```
+
+Copilot will identify the `build-plugin` skill from the manifest and execute the sequential skill flow.
+
+| Step | What happens                                                                  |
+| ---- | ----------------------------------------------------------------------------- |
+| 1    | Greets you by name                                                            |
+| 2    | Runs 3 skills sequentially: git-detect, schema-scan, tech-stack-detect        |
+| 2.5  | Classifies detected techs — you confirm the list                              |
+| 3    | Asks monorepo questions if needed, shows expected folder structure            |
+| 4    | You choose Light / Medium / Deep mode                                         |
+| 5    | Searches for blueprints per tech in sequence                                  |
+| 6    | You choose your target AI tool                                                |
+| 7    | Scaffolds the marketplace folder structure in your project                    |
+| 8    | Generates skills and agents sequentially using your selected blueprints       |
+| 9    | Creates a `pilot.md` tailored to your mode and stack                          |
+| 10   | Validates the entire generated plugin                                         |
+| 11   | Guides you through install → pilot run → fix loop                             |
+| 12   | Helps you publish to your own GitHub repo                                     |
+| 13   | Summary                                                                       |
+
+</details>
+
 ---
 
 ## What gets generated in your project
 
-After `/build-plugin` completes, your project will have:
+After the build-plugin skill completes, your project will contain a generated `marketplace/` folder. The exact structure depends on the target platform.
+
+<details>
+<summary><b>Claude Code</b> — generated marketplace</summary>
 
 ```text
 your-project/
 └── marketplace/
     ├── .claude-plugin/
     │   └── plugin.json
-    ├── .githooks/
-    │   └── pre-commit              ← generated fresh for your project paths
     ├── plugins/
     │   └── your-plugin/
     │       ├── .claude-plugin/
@@ -200,16 +274,38 @@ your-project/
     └── README.md
 ```
 
+</details>
+
+<details>
+<summary><b>GitHub Copilot</b> — generated marketplace</summary>
+
+```text
+your-project/
+└── marketplace/
+    ├── plugin.json
+    ├── AGENTS.md
+    ├── .github/
+    │   ├── copilot-instructions.md
+    │   ├── skills/                 ← rewritten for your actual codebase
+    │   └── agents/
+    │       └── *.agent.md
+    ├── .mcp.json
+    └── README.md
+```
+
+</details>
+
 ---
 
 ## Supported AI tools
 
-| Tool        | Status         |
-| ----------- | -------------- |
-| Claude Code | ✅ Supported   |
-| Opencode    | 🔜 Coming soon |
-| Copilot     | 🔜 Coming soon |
-| Codex       | 🔜 Coming soon |
+| Tool        | Status             | Build flow          |
+| ----------- | ------------------ | ------------------- |
+| Claude Code | ✅ Supported       | Agent (parallel)    |
+| GitHub Copilot | ✅ Supported    | Skill (sequential)  |
+| Opencode    | 🔜 Coming soon     | —                   |
+| Codex       | 🔜 Coming soon     | —                   |
+| Cursor      | 🔜 Coming soon     | —                   |
 
 ---
 
@@ -220,7 +316,8 @@ Contributions are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelin
 The most valuable contributions right now:
 
 - New tech stack blueprints under `plugins/core/blueprints/`
-- Additional validator rules in `plugins/core/scripts/validate-plugins.mjs`
+- Additional validator rules in `plugins/core/scripts/`
+- Platform-specific skeleton references under `plugins/core/skills/skeleton-build/`
 - New mode definitions under `plugins/core/modes/`
 
 ---
