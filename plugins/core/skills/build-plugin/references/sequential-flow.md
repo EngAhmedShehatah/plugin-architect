@@ -8,7 +8,7 @@ platforms: ["Copilot", "Cursor", "Codex"]
 
 This is the detailed flow for **Skill-only platforms** (Copilot, Cursor, Codex).
 
-Use this if you started from `build-plugin.md` and confirmed you do NOT have Agent capability.
+Use this if you started from the build-plugin skill and confirmed you do NOT have Agent capability.
 
 The workflow is identical to `agent-flow.md` (same 13 steps, same outputs), but **execution is sequential** because you cannot spawn parallel subagents.
 
@@ -116,9 +116,9 @@ Next we need to know which mode you want to build your plugin with (options):
 
 Provide short descriptions from:
 
-- `../modes/light.md`
-- `../modes/medium.md`
-- `../modes/deep.md`
+- `../../modes/light.md`
+- `../../modes/medium.md`
+- `../../modes/deep.md`
 
 Output the updated expected folder structure based on the chosen mode, including validation and CI pipeline.
 
