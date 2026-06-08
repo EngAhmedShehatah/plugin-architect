@@ -1,7 +1,7 @@
 {
   "name": "plugin-architect",
   "description": "A meta-plugin that helps developers generate custom, codebase-focused Claude Code plugins for their projects.",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "plugins": [
     "./plugins/core"
   ],

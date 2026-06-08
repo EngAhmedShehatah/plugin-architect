@@ -1,0 +1,20 @@
+{
+  "name": "plugin-architect",
+  "description": "A meta-plugin that helps developers generate custom, codebase-focused Claude Code plugins for their projects.",
+  "version": "1.0.16",
+  "author": {
+    "name": "Ahmed Shehatah",
+    "email": "engahmedshehatah@gmail.com"
+  },
+  "skills": [
+    "./plugins/core/skills/agent-create",
+    "./plugins/core/skills/blueprint-select",
+    "./plugins/core/skills/git-detect",
+    "./plugins/core/skills/plugin-validate",
+    "./plugins/core/skills/schema-scan",
+    "./plugins/core/skills/skeleton-build",
+    "./plugins/core/skills/skill-create",
+    "./plugins/core/skills/tech-stack-detect"
+  ],
+  "mcpServers": "./plugins/core/.mcp.json"
+}
