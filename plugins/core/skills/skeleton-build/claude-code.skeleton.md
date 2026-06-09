@@ -23,8 +23,6 @@ marketplace/
 │       │       └── scripts/     # Skill-specific scripts
 │       ├── commands/            # Slash commands (optional)
 │       │   └── <name>.md
-│       ├── agents/              # Sub-agent definitions (optional)
-│       │   └── <name>.md
 │       ├── hooks/               # Hook configs (optional)
 │       │   └── hooks.json
 │       ├── scripts/             # Hook/utility scripts (optional)
@@ -63,7 +61,6 @@ marketplace/
   "keywords": ["keyword1", "keyword2"],
   "skills": "./custom/skills/",
   "commands": ["./custom/commands/special.md"],
-  "agents": ["./custom/agents/reviewer.md"],
   "hooks": "./config/hooks.json",
   "mcpServers": "./mcp-config.json",
   "outputStyles": "./styles/",
@@ -85,7 +82,7 @@ marketplace/
 - Nested `marketplace/plugins/core/.claude-plugin/plugin.json` is the plugin manifest
 - `.claude-plugin/` is for `plugin.json` ONLY — all other dirs live at the plugin root
 - In plugin-architect output, the plugin root is `marketplace/plugins/core/`
-- `skills/`, `commands/`, `agents/`, `hooks/` all live at the nested plugin root, NOT inside `.claude-plugin/`
+- `skills/`, `commands/`, `hooks/` all live at the nested plugin root, NOT inside `.claude-plugin/`
 - `plugin.json` supports `string`, `array`, or `object` values for paths
 - Hooks config: `hooks/hooks.json` (or path specified in manifest)
 - Scripts called by hooks must have proper shebang and execute permissions

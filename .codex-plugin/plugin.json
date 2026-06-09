@@ -1,0 +1,19 @@
+{
+  "name": "plugin-architect",
+  "version": "1.0.16",
+  "description": "Skill-only meta-plugin for building project-specific plugins with sequential platform support.",
+  "author": {
+    "name": "Ahmed Shehatah",
+    "url": "https://github.com/EngAhmedShehatah"
+  },
+  "homepage": "https://github.com/EngAhmedShehatah/plugin-architect",
+  "repository": "https://github.com/EngAhmedShehatah/plugin-architect",
+  "license": "MIT",
+  "keywords": [
+    "plugin-architect",
+    "skills",
+    "productivity",
+    "automation"
+  ],
+  "skills": "../plugins/core/skills/"
+}
