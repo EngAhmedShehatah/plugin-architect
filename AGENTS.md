@@ -4,24 +4,25 @@ applyTo: "**"
 
 # Plugin Architect — Agent Instructions
 
-You are working with the plugin-architect project. This is a meta-plugin that developers use to generate custom, codebase-focused plugins for AI coding tools.
+You are working with the plugin-architect project. This is a meta-plugin that developers use to generate custom, project-specific plugins for AI coding tools.
 
 ## Project structure
 
-- `plugin.json` — Copilot manifest
+- `plugin.json` — Copilot-compatible manifest
 - `plugins/core/` — Core plugin implementation
   - `skills/` — Skill definitions (each folder contains a `SKILL.md`)
-  - `agents/` — Agent definitions
   - `commands/` — Slash commands (Claude Code only)
   - `scripts/` — Utility scripts
   - `.mcp.json` — MCP server configuration
 - `.claude-plugin/` — Claude Code marketplace manifest
+- `.cursor-plugin/` — Cursor-compatible manifest
+- `.codex-plugin/` — Codex-compatible manifest
+- `.github/plugin/` — GitHub plugin manifest
 
 ## Available skills
 
 Each skill lives under `plugins/core/skills/<name>/SKILL.md` and is designed to be invoked by its description:
 
-- `agent-create` — Creates a new agent markdown file
 - `blueprint-select` — Searches for a skill blueprint matching a technology
 - `git-detect` — Detects the project's git setup, hosting provider, and branching strategy
 - `plugin-validate` — Validates a generated plugin folder against rules

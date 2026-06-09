@@ -1,0 +1,7 @@
+{
+  "name": "plugin-architect",
+  "version": "1.0.16",
+  "description": "Skill-only meta-plugin for building project-specific plugins with sequential platform support.",
+  "contextFileName": "AGENTS.md",
+  "excludeTools": []
+}

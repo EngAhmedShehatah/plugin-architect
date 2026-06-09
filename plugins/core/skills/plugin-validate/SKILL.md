@@ -1,6 +1,6 @@
 ---
 name: plugin-validate
-description: Validates a generated plugin folder against validator.config.json rules — line limits, naming conventions, and skill-agent pairing.
+description: Validates a generated plugin folder against validator.config.json rules — line limits, naming conventions, and skill-only structure.
 input:
   plugin_path: absolute path to the generated plugin root folder
   config_path: absolute path to validator.config.json (defaults to plugins/core/scripts/validators/validator.config.json)
@@ -19,8 +19,8 @@ Reads every artifact inside `plugin_path` and checks it against the rules define
 This skill is fully self-contained and works standalone on any tool. Execute each step in order using whatever methods are available to you (file reading, etc.).
 
 1. Load the validator config from `config_path` (or use the default path if not provided)
-2. Recursively read all `.md` files under `plugin_path/skills/` and `plugin_path/agents/`
-3. For each file, apply all 8 validation rules (detailed below)
+2. Recursively read all `.md` files under `plugin_path/skills/`
+3. For each file, apply all validation rules (detailed below)
 4. Collect violations and their severity levels
 5. Generate a structured violation report
 6. Return a single JSON object only — do not append prose or a separate text summary
@@ -57,45 +57,31 @@ Every skill folder under `<plugin_path>/skills/` must:
 
 Violations → `severity: error`
 
-### Rule 3 — Agent naming (`agent-naming`)
+### Rule 3 — Frontmatter presence (`frontmatter-required`)
 
-Every agent file under `<plugin_path>/agents/` must:
-
-- Be named in `kebab-case` with `.md` extension
-- Contain a YAML frontmatter block with a `name` field
-- Have the `name` value match the filename (without `.md`)
-
-Violations → `severity: error`
-
-### Rule 4 — Skill-agent pairing (`skill-agent-pairing`)
-
-For each skill in `<plugin_path>/skills/`, there must be a corresponding agent file at `<plugin_path>/agents/<skill-name>.md` OR an agent that lists the skill name in its `skills` property.
-
-If no agent references the skill → `severity: warning`.
-
-### Rule 5 — Frontmatter presence (`frontmatter-required`)
-
-Every `.md` file under `skills/` and `agents/` must contain a valid YAML frontmatter block (delimited by `---`).
+Every `.md` file under `skills/` must contain a valid YAML frontmatter block (delimited by `---`).
 
 Missing or malformed frontmatter → `severity: error`.
 
-### Rule 6 — No generic descriptions (`no-generic-descriptions`)
+### Rule 4 — No generic descriptions (`no-generic-descriptions`)
 
-Skill and agent `description` fields must not contain vague, filler language. The following are common examples of phrases to flag — use your judgment to catch similar patterns:
+Skill `description` fields must not contain vague, filler language. The following are common examples of phrases to flag — use your judgment to catch similar patterns:
 
-- "this skill", "this agent"
-- "handles", "manages"
-- "a tool that", "used to"
+- "this skill"
+- "handles"
+- "manages"
+- "a tool that"
+- "used to"
 
 If a description reads as generic boilerplate rather than a specific, codebase-focused statement → `severity: warning`.
 
-### Rule 7 — Command file presence (`command-file`)
+### Rule 5 — Command file presence (`command-file`)
 
 If `plugin.json` declares entries in `commands`, each referenced file must exist on disk.
 
 Missing file → `severity: error`.
 
-### Rule 8 — Hook config validity (`hook-config`)
+### Rule 6 — Hook config validity (`hook-config`)
 
 If `plugin.json` references a hooks config file, that file must exist and be valid JSON.
 
@@ -119,7 +105,7 @@ Invalid or missing → `severity: error`.
       "severity": "error"
     },
     {
-      "file": "agents/auth-scanner.md",
+      "file": "skills/auth-scanner/SKILL.md",
       "rule": "no-generic-descriptions",
       "message": "Description contains generic language: 'used to'.",
       "severity": "warning"
