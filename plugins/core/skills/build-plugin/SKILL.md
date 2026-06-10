@@ -1,73 +1,41 @@
 ---
 name: build-plugin
-description: Orchestrates the full plugin build journey. Detects platform capability, scans the codebase, selects blueprints, generates skills and agents, and delivers a ready-to-install plugin.
-input:
-  project_path: absolute path to the target project root
-output:
-  marketplace: path to the generated marketplace folder
+description: Sequential build flow for platforms without agent-style parallel execution. Use this skill on skill-only surfaces, and use the command variant on Claude Code / OpenCode.
 ---
+
+# build-plugin — sequential skill flow
+
+Use this skill when the host platform cannot run the command-based parallel flow.
 
 ## What this skill does
 
-Builds a custom plugin for the user's project. Detects which platform you're on, routes to the appropriate build flow, and guides through all 13 steps from scanning to deployment.
+- Runs the build in sequence instead of in parallel
+- Keeps the same target-platform choice list as the command flow
+- Supports the `multi-platform` option
+- Keeps agents available only for surfaces that support them (`Claude Code` and `OpenCode`)
 
-## How to execute this skill
+## Workflow
 
-### Step 1: Detect your platform
+1. Scan the project sequentially
+2. Classify techs before blueprint search
+3. Ask monorepo questions if needed
+4. Ask for build mode
+5. Search blueprints one tech at a time
+6. Choose the target platform from the full caveman-supported list
+7. Build the skeleton
+8. Generate skills, and generate agents only when the target platform supports them
+9. Create the pilot command
+10. Validate the result
+11. Install and test
+12. Publish if the user is happy
+13. Summarize
 
-Identify which platform you are running on:
+## Platform rules
 
-| Platform | Capability |
-|---|---|
-| Claude Code, OpenCode | Agent-capable (parallel subagents) |
-| Copilot, Cursor, Codex | Skill-only (sequential execution) |
+- Claude Code and OpenCode can install the agent-backed surface.
+- Other single platforms should stay skill-first.
+- `multi-platform` means copy the full infrastructure pattern and keep every supported file/folder surface.
 
-### Step 2: Route to the appropriate flow
+## References
 
-#### If Agent-capable
-
-Follow the detailed agent flow at `references/agent-flow.md`:
-
-- Parallel subagent execution for faster scanning
-- Full orchestration capabilities
-- All 13 steps with optimal performance
-
-#### If Skill-only
-
-Follow the detailed sequential flow at `references/sequential-flow.md`:
-
-- Sequential skill execution (no parallel subagents)
-- Same 13 steps adapted for your platform
-- Full functionality, step-by-step
-
-### What both flows produce
-
-Once complete:
-
-1. A `marketplace/` folder is created at the project root
-2. Inside: fully scaffolded, validated plugin ready to install
-3. User installs and tests locally (pilot phase)
-4. Finally pushes to a live git repo
-
-Both flows produce identical output — the only difference is execution strategy.
-
-## Output format
-
-Return a JSON object with:
-
-```json
-{
-  "marketplace": "path/to/marketplace",
-  "platform": "claude-code",
-  "execution": "agent-flow | sequential-flow",
-  "summary": "Short summary of what was built"
-}
-```
-
-## Constraints
-
-- Do not narrate platform detection to the user — route silently
-- The first output the user sees must be the greeting from the chosen flow
-- Both flows must produce identical output structure
-- Only create files inside the generated marketplace
-- Never modify files outside the project root
+- `../../commands/references/sequential-flow.md`

@@ -3,16 +3,16 @@
   "questionFlow": [
     {
       "step": 2,
-      "action": "sequential-scan",
-      "skills": [
-        { "name": "git-detect", "path": "../agents/git-detector.md" },
-        { "name": "schema-scan", "path": "../agents/schema-scanner.md" },
-        { "name": "tech-stack-detect", "path": "../agents/tech-stack-detector.md" }
+      "action": "parallel-scan",
+      "agents": [
+        { "name": "git-detector", "path": "../agents/git-detector.md" },
+        { "name": "schema-scanner", "path": "../agents/schema-scanner.md" },
+        { "name": "tech-stack-detector", "path": "../agents/tech-stack-detector.md" }
       ]
     },
     {
       "step": 3,
-      "condition": "schema-scan.isMonorepo === true",
+      "condition": "schema-scanner.isMonorepo === true",
       "questions": [
         {
           "id": "monorepo-strategy",
@@ -46,9 +46,9 @@
     },
     {
       "step": 5,
-      "action": "sequential-blueprint-select",
-      "skill": "../agents/blueprint-selector.md",
-      "note": "Search blueprints one tech at a time. Show each row before moving on."
+      "action": "parallel-blueprint-select",
+      "agent": "../agents/blueprint-selector.md",
+      "note": "Spin one blueprint-selector subagent per confirmed skill-worthy tech in parallel. Each receives only: tech."
     },
     {
       "step": 6,
@@ -96,19 +96,37 @@
       "splitStrategy": "by-role",
       "skillsPerRole": 1,
       "agentsPerRole": 1,
-      "namingConvention": "role-based"
+      "namingConvention": "role-based",
+      "examples": {
+        "implementation": ["implementer"],
+        "testing": ["tester"],
+        "review": ["code-reviewer"],
+        "git": ["git-handler"]
+      }
     },
     "medium": {
       "splitStrategy": "by-concern",
       "skillsPerRole": "1-per-concern",
       "agentsPerRole": "1-per-concern",
-      "namingConvention": "concern-based"
+      "namingConvention": "concern-based",
+      "examples": {
+        "implementation": ["implementer"],
+        "testing": ["unit-tester", "e2e-tester"],
+        "review": ["code-reviewer"],
+        "git": ["git-handler"]
+      }
     },
     "deep": {
       "splitStrategy": "by-domain-and-concern",
       "skillsPerRole": "1-per-domain-concern-pair",
       "agentsPerRole": "1-per-domain-concern-pair",
-      "namingConvention": "domain-specific"
+      "namingConvention": "domain-specific",
+      "examples": {
+        "implementation": ["core-implementer", "api-implementer", "mcp-implementer"],
+        "testing": ["unit-tester", "e2e-tester", "mcp-tester"],
+        "review": ["code-reviewer", "security-scanner"],
+        "git": ["git-handler"]
+      }
     }
   },
   "folderStructureRules": {

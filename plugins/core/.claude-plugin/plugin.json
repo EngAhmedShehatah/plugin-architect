@@ -1,7 +1,7 @@
 {
   "name": "core",
   "version": "1.0.16",
-  "description": "A Claude Code plugin that devs can use to create focused custom plugins for their projects",
+  "description": "A multi-platform core plugin for building focused, codebase-specific plugins for different AI coding surfaces.",
   "author": {
     "name": "Ahmed Shehatah",
     "email": "engahmedshehatah@gmail.com",
@@ -33,6 +33,9 @@
     "./agents/skeleton-builder.md",
     "./agents/skill-creator.md",
     "./agents/agent-creator.md"
+  ],
+  "commands": [
+    "./commands/build-plugin.md"
   ],
   "mcpServers": "./.mcp.json",
   "hooks": {

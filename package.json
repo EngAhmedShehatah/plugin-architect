@@ -1,7 +1,7 @@
 {
   "name": "plugin-architect",
   "version": "1.0.0",
-  "description": "A Claude Code plugin that devs can use to create focused custom plugins for their projects",
+  "description": "A multi-platform plugin builder that helps developers generate custom, codebase-focused plugins for their projects",
   "type": "module",
   "scripts": {
     "lint": "markdownlint-cli2 \"**/*.md\" \"#node_modules\"",

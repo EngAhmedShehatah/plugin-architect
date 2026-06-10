@@ -4,35 +4,41 @@ applyTo: "**"
 
 # Plugin Architect — Agent Instructions
 
-You are working with the plugin-architect project. This is a meta-plugin that developers use to generate custom, codebase-focused plugins for AI coding tools.
+You are working in the `plugin-architect` repo, which builds custom plugins for AI coding surfaces.
 
 ## Project structure
 
-- `plugin.json` — Copilot manifest
-- `plugins/core/` — Core plugin implementation
-  - `skills/` — Skill definitions (each folder contains a `SKILL.md`)
-  - `agents/` — Agent definitions
-  - `commands/` — Slash commands (Claude Code only)
-  - `scripts/` — Utility scripts
-  - `.mcp.json` — MCP server configuration
-- `.claude-plugin/` — Claude Code marketplace manifest
+- `plugin.json` — repo-level manifest
+- `.claude-plugin/` — marketplace manifest for Claude Code
+- `plugins/core/` — core plugin implementation
+  - `skills/` — skill definitions
+  - `agents/` — agent definitions
+  - `commands/` — command entrypoints and flow references
+  - `scripts/` — utility scripts
+  - `.mcp.json` — MCP server config
 
-## Available skills
+## Build entrypoints
 
-Each skill lives under `plugins/core/skills/<name>/SKILL.md` and is designed to be invoked by its description:
+- Use the **command flow** on agent-capable surfaces: **Claude Code** and **OpenCode**
+- Use the **sequential build skill** on skill-only surfaces
+- The target platform chooser must include the full caveman-supported surface list plus `multi-platform`
+- Agents are installable only for **Claude Code** and **OpenCode** surfaces
 
-- `agent-create` — Creates a new agent markdown file
-- `blueprint-select` — Searches for a skill blueprint matching a technology
-- `git-detect` — Detects the project's git setup, hosting provider, and branching strategy
-- `plugin-validate` — Validates a generated plugin folder against rules
-- `schema-scan` — Detects monorepo structure, package manager, and workspaces
-- `skeleton-build` — Builds a platform-specific plugin skeleton from the checked-in skeleton reference
-- `skill-create` — Creates a new skill markdown file
-- `tech-stack-detect` — Scans the project tech stack from manifests and config files
+## Available build-related skills
+
+- `agent-create` — create a new agent markdown file
+- `blueprint-select` — find a blueprint for a tech
+- `build-plugin` — sequential build flow for skill-only surfaces
+- `git-detect` — detect git setup
+- `plugin-validate` — validate a generated plugin folder
+- `schema-scan` — detect monorepo structure and workspaces
+- `skill-create` — create a new skill markdown file
+- `tech-stack-detect` — scan the project tech stack
 
 ## Guidance
 
 - Read the file before making assumptions about its structure
-- Use the available skills when a task matches their purpose
-- Do not create or modify files outside the project without user confirmation
-- Refer to `plugins/core/.claude-plugin/plugin.json` for the full plugin declaration
+- Follow the existing flow files instead of inventing a new build path
+- Keep agent generation limited to Claude Code and OpenCode surfaces
+- Avoid the old skeleton-detector path when implementing the build flow
+- Refer to `plugins/core/.claude-plugin/plugin.json` for the core plugin declaration
