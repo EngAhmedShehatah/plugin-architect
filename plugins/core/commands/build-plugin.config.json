@@ -8,7 +8,36 @@
         { "name": "git-detector", "path": "../agents/git-detector.md" },
         { "name": "schema-scanner", "path": "../agents/schema-scanner.md" },
         { "name": "tech-stack-detector", "path": "../agents/tech-stack-detector.md" }
-      ]
+      ],
+      "note": "Run the three scan agents in parallel and surface each report to the user."
+    },
+    {
+      "step": 2.5,
+      "action": "classify-tech-stack",
+      "source": "tech-stack-detector",
+      "groups": {
+        "skillWorthy": [
+          "frameworks",
+          "languages",
+          "test runners",
+          "major databases",
+          "build tools",
+          "runtime platforms",
+          "core infrastructure"
+        ],
+        "utilityInfra": [
+          "middleware",
+          "auth tokens",
+          "documentation generators",
+          "analytics",
+          "minor libraries",
+          "third-party APIs",
+          "implementation details"
+        ]
+      },
+      "prompt": "Show the proposed split to the user and wait for confirmation before any blueprint-selector subagents are spawned.",
+      "allowedReplies": ["confirm", "add [tech]", "remove [tech]", "set [techs...]"],
+      "note": "Only the confirmed skill-worthy tech list is used for blueprint search."
     },
     {
       "step": 3,
@@ -16,21 +45,18 @@
       "questions": [
         {
           "id": "monorepo-strategy",
-          "prompt": "This is a monorepo project. Do you want one plugin for all packages, or one separate plugin for each?",
+          "prompt": "This is a monorepo project that contains multiple packages. Do you want one plugin for all of them, or one separate plugin for each?",
           "options": ["one-for-all", "one-per-package"]
         },
         {
           "id": "shared-plugin",
           "condition": "monorepo-strategy === 'one-per-package'",
-          "prompt": "Do you want a shared/core plugin to avoid duplication across packages?",
+          "prompt": "Do you want one shared/core plugin to avoid duplication across packages?",
           "options": ["yes-shared-core", "no-duplication-is-fine"]
         }
-      ]
-    },
-    {
-      "step": 3,
+      ],
       "action": "output-folder-structure",
-      "note": "Output partial folder structure (levels 1-3 only) and wait for user confirmation before proceeding to mode selection"
+      "note": "Output levels 1-3 of the expected folder structure and wait for confirmation."
     },
     {
       "step": 4,
@@ -42,18 +68,19 @@
         { "value": "deep", "descriptionSource": "../modes/deep.md" }
       ],
       "action": "output-full-folder-structure",
-      "note": "After mode selection, output complete folder structure including validation, pre-commit, and CI. Wait for confirmation."
+      "note": "After mode selection, output the full folder structure including telemetry, validation, pre-commit, and CI. Wait for confirmation."
     },
     {
       "step": 5,
       "action": "parallel-blueprint-select",
       "agent": "../agents/blueprint-selector.md",
-      "note": "Spin one blueprint-selector subagent per confirmed skill-worthy tech in parallel. Each receives only: tech."
+      "input": "confirmed skill-worthy tech list",
+      "note": "Spin one blueprint-selector subagent per confirmed skill-worthy tech in parallel."
     },
     {
       "step": 6,
       "id": "target-platform",
-      "prompt": "Which platform do you want this plugin to target?",
+      "prompt": "Which AI platform do you want this plugin to target?",
       "options": [
         "Claude Code",
         "OpenCode",
@@ -88,7 +115,8 @@
         "Qoder",
         "Google Antigravity",
         "multi-platform"
-      ]
+      ],
+      "note": "Claude Code and OpenCode include agents, other single-platform targets stay skill-first, and multi-platform generates the full caveman-style marketplace skeleton."
     }
   ],
   "defaults": {
@@ -140,6 +168,20 @@
       "plugins/core/scripts/",
       "plugins/core/.mcp.json",
       "README.md"
+    ],
+    "notes": [
+      "Build the skeleton by scanning the GitHub repo itself for the matching platform skeletons.",
+      "Do not use the cached or installed plugin folder as the source of truth.",
+      "If GitHub cannot be reached, block and stop — no fallback.",
+      "When a single platform is selected, copy only the platform-specific folders and files needed for that surface.",
+      "When multi-platform is selected, compose the marketplace folder from the platform skeletons present in the GitHub repo and keep the platform-specific surfaces separate.",
+      "Do not bring in the old skeleton-detector path.",
+      "Generate skills and agents through the Agent tool, not inline.",
+      "Copy session-init.mjs, version-bump.mjs, and validate-plugins.mjs into the generated marketplace.",
+      "Generate a fresh pre-commit hook using the marketplace plugin folder name so the paths are correct.",
+      "Create the pilot.md command in the marketplace/commands folder from the pilot template and the selected mode workflow.",
+      "Run validation with node marketplace/plugins/core/scripts/validate-plugins.mjs marketplace/ before proceeding.",
+      "Instruct the user to install the created marketplace locally, then test the pilot command and iterate if concerns remain."
     ]
   }
 }
