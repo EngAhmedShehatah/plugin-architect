@@ -20,7 +20,6 @@
     "./skills/git-detect",
     "./skills/plugin-validate",
     "./skills/schema-scan",
-    "./skills/skeleton-build",
     "./skills/skill-create",
     "./skills/tech-stack-detect"
   ],
@@ -30,7 +29,6 @@
     "./agents/tech-stack-detector.md",
     "./agents/plugin-validator.md",
     "./agents/blueprint-selector.md",
-    "./agents/skeleton-builder.md",
     "./agents/skill-creator.md",
     "./agents/agent-creator.md"
   ],

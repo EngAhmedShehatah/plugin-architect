@@ -12,7 +12,6 @@
     "./plugins/core/skills/git-detect",
     "./plugins/core/skills/plugin-validate",
     "./plugins/core/skills/schema-scan",
-    "./plugins/core/skills/skeleton-build",
     "./plugins/core/skills/skill-create",
     "./plugins/core/skills/tech-stack-detect"
   ],
