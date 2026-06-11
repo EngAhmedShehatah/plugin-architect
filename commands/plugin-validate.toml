@@ -1,2 +1,0 @@
-description = "Validate a generated plugin folder against structural rules"
-prompt = "Read plugins/core/skills/plugin-validate/SKILL.md and follow it exactly to validate the plugin at {{args}}. Report all violations clearly."

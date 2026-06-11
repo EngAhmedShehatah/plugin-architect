@@ -1,2 +1,0 @@
-description = "Generate a platform-specific plugin skeleton folder structure"
-prompt = "Read plugins/core/skills/skeleton-build/SKILL.md and follow it exactly. Platform: {{args}}. Do not guess platform structure — use only the checked-in skeleton reference file."
