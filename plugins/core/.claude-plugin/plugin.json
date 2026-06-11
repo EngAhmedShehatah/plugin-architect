@@ -1,6 +1,6 @@
 {
   "name": "core",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "A Claude Code plugin that devs can use to create focused custom plugins for their projects",
   "author": {
     "name": "Ahmed Shehatah",
