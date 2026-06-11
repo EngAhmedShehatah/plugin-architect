@@ -2,7 +2,7 @@
 name: skeleton-build
 description: Builds a platform-specific plugin skeleton from the checked-in official skeleton reference for that platform.
 input:
-  platform: one of "claude-code", "github-copilot", "cursor", "windsurf", "cline", "gemini", "opencode" — determines which skeleton to build
+  platform: one of "claude-code", "github-copilot", "cursor", "windsurf", "cline", "gemini", "opencode", "codex" — determines which skeleton to build
   user_name: author name for plugin.json
   user_email: author email for plugin.json
   surfaces: comma-separated list of surfaces to include (optional — defaults to all surfaces for the platform)
@@ -32,12 +32,13 @@ Choose the reference file from `platform`:
 | `cline` | `./cline.skeleton.md` | `vscode-extension` |
 | `gemini` | `./gemini.skeleton.md` | `cli`, `desktop` |
 | `opencode` | `./opencode.skeleton.md` | `cli` |
+| `codex` | `./codex.skeleton.md` | `cli` |
 
 If `platform` is not one of the supported values, stop and report:
 
 ```text
 [BLOCKER] Unsupported platform: {platform}.
-Supported platforms: claude-code, github-copilot, cursor, windsurf, cline, gemini, opencode.
+Supported platforms: claude-code, github-copilot, cursor, windsurf, cline, gemini, opencode, codex.
 ```
 
 ### Step 2: Read the reference file
@@ -100,6 +101,8 @@ For `cline`, generate `.clinerules` at the project root with skills listed under
 For `gemini`, generate `gemini-extension.json` + `GEMINI.md` with `@`-includes of all skill SKILL.md files under `skills/`.
 
 For `opencode`, generate `src/plugins/opencode/plugin.js` (ESM, `session.created` hook) + `package.json` + `AGENTS.md` with `@`-includes of all skills under `skills/`.
+
+For `codex`, generate `.codex-plugin/plugin.json` with `"skills": "./skills/"` pointing to the skills directory. Each skill folder becomes invocable as `@<skill-name>` inside Codex. Include an `interface.defaultPrompt` array telling Codex how to activate the plugin.
 
 Generate the minimal useful skeleton for the selected platform and surfaces:
 

@@ -1,0 +1,28 @@
+{
+  "name": "plugin-architect",
+  "version": "1.0.18",
+  "description": "Meta-plugin generator. Generates custom, codebase-focused plugins for AI coding tools.",
+  "author": {
+    "name": "Ahmed Shehatah",
+    "url": "https://github.com/EngAhmedShehatah"
+  },
+  "homepage": "https://github.com/EngAhmedShehatah/plugin-architect",
+  "repository": "https://github.com/EngAhmedShehatah/plugin-architect",
+  "license": "MIT",
+  "keywords": ["plugin", "code-generation", "ai-tools", "scaffold"],
+  "skills": "./plugins/core/skills/",
+  "interface": {
+    "displayName": "Plugin Architect",
+    "shortDescription": "Generate a custom, codebase-focused plugin for any AI coding tool.",
+    "longDescription": "Plugin Architect analyzes your project and generates a structured, production-ready plugin for Claude Code, Copilot, Gemini, Cursor, Windsurf, Cline, opencode, or Codex — tailored to your actual tech stack.",
+    "developerName": "Ahmed Shehatah",
+    "category": "Productivity",
+    "capabilities": ["Write"],
+    "websiteURL": "https://github.com/EngAhmedShehatah/plugin-architect",
+    "privacyPolicyURL": "https://github.com/EngAhmedShehatah/plugin-architect/blob/main/README.md",
+    "termsOfServiceURL": "https://github.com/EngAhmedShehatah/plugin-architect/blob/main/LICENSE",
+    "defaultPrompt": [
+      "plugin-architect is installed. When the user says 'build plugin', 'generate plugin', or 'set up plugin', read plugins/core/skills/build-plugin/SKILL.md and follow it exactly."
+    ]
+  }
+}

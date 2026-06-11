@@ -54,7 +54,7 @@
       "step": 6,
       "id": "ai-model",
       "prompt": "Which AI model are you planning to use this plugin against?",
-      "options": ["claude-code", "opencode", "codex", "copilot"]
+      "options": ["claude-code", "github-copilot", "gemini", "opencode", "cursor", "windsurf", "cline", "codex"]
     }
   ],
   "defaults": {
