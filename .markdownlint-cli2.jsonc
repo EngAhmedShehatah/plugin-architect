@@ -1,0 +1,20 @@
+{
+  "ignores": [
+    ".agents/**",
+    ".junie/**",
+    ".kiro/**",
+    ".roo/**",
+    "agents/**",
+    "benchmarks/**",
+    "CLAUDE.md",
+    "docs/**",
+    "evals/**",
+    "GEMINI.md",
+    "INSTALL.md",
+    "plugins/caveman/**",
+    "skills/**",
+    "src/hooks/README.md",
+    "src/rules/**",
+    "tests/**"
+  ]
+}
