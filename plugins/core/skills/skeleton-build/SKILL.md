@@ -2,7 +2,7 @@
 name: skeleton-build
 description: Builds a platform-specific plugin skeleton from the checked-in official skeleton reference for that platform.
 input:
-  platform: one of "claude-code" or "github-copilot" — determines which skeleton to build
+  platform: one of "claude-code", "github-copilot", "cursor", "windsurf", "cline", "gemini", "opencode" — determines which skeleton to build
   user_name: author name for plugin.json
   user_email: author email for plugin.json
   surfaces: comma-separated list of surfaces to include (optional — defaults to all surfaces for the platform)
@@ -27,12 +27,17 @@ Choose the reference file from `platform`:
 |---|---|---|
 | `claude-code` | `./claude-code.skeleton.md` | `cli`, `desktop`, `vscode-extension` |
 | `github-copilot` | `./github-copilot.skeleton.md` | `cli`, `vscode-extension` |
+| `cursor` | `./cursor.skeleton.md` | `desktop` |
+| `windsurf` | `./windsurf.skeleton.md` | `desktop` |
+| `cline` | `./cline.skeleton.md` | `vscode-extension` |
+| `gemini` | `./gemini.skeleton.md` | `cli`, `desktop` |
+| `opencode` | `./opencode.skeleton.md` | `cli` |
 
 If `platform` is not one of the supported values, stop and report:
 
 ```text
 [BLOCKER] Unsupported platform: {platform}.
-Supported platforms: claude-code, github-copilot.
+Supported platforms: claude-code, github-copilot, cursor, windsurf, cline, gemini, opencode.
 ```
 
 ### Step 2: Read the reference file
@@ -85,6 +90,16 @@ Construct the generated skeleton from the parsed reference.
 For `claude-code`, preserve the marketplace wrapper plus the nested plugin root. The nested plugin keeps the documented `.claude-plugin/plugin.json` manifest location and root-level plugin component folders under `marketplace/plugins/core/`.
 
 For `github-copilot`, preserve the documented root-level `plugin.json`, `AGENTS.md`, and Copilot customization paths.
+
+For `cursor`, generate `.cursor/rules/<plugin-name>.mdc` with `alwaysApply: true` frontmatter and skills listed under `skills/`.
+
+For `windsurf`, generate `.windsurfrules` at the project root with skills listed under `skills/`.
+
+For `cline`, generate `.clinerules` at the project root with skills listed under `skills/`.
+
+For `gemini`, generate `gemini-extension.json` + `GEMINI.md` with `@`-includes of all skill SKILL.md files under `skills/`.
+
+For `opencode`, generate `src/plugins/opencode/plugin.js` (ESM, `session.created` hook) + `package.json` + `AGENTS.md` with `@`-includes of all skills under `skills/`.
 
 Generate the minimal useful skeleton for the selected platform and surfaces:
 
