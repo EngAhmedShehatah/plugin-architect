@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'plugin-architect is installed. Say \"build plugin\" to generate a custom AI coding plugin for this project. Entry point: plugins/core/skills/build-plugin/SKILL.md. Read SKILL.md before acting.'",
+            "timeout": 5,
+            "statusMessage": "Loading plugin-architect"
+          }
+        ]
+      }
+    ]
+  }
+}

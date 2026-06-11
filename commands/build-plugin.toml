@@ -1,0 +1,2 @@
+description = "Generate a custom, codebase-focused plugin for an AI coding tool"
+prompt = "Read plugins/core/skills/build-plugin/SKILL.md and follow it exactly to generate a plugin for this project. Do not invent any content — follow the skill workflow step by step."
