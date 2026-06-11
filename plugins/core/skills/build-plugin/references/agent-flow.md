@@ -111,9 +111,9 @@ Next we need to know which mode you want to build your plugin with (options):
 
 Provide short descriptions from:
 
-- `../../modes/light.md`
-- `../../modes/medium.md`
-- `../../modes/deep.md`
+- `../../references/light.md`
+- `../../references/medium.md`
+- `../../references/deep.md`
 
 Output the updated expected folder structure based on the chosen mode, including validation and CI pipeline.
 
@@ -177,7 +177,7 @@ Silently fetch all remote resources needed for the rest of this workflow. Do not
 
 Fetch:
 
-- `pilot.template.md` from `https://raw.githubusercontent.com/EngAhmedShehatah/plugin-architect/main/plugins/core/resources/pilot.template.md`
+- `pilot.template.md` from `https://raw.githubusercontent.com/EngAhmedShehatah/plugin-architect/main/plugins/core/references/pilot.template.md`
 
 ## Step 7: Create marketplace skeleton
 
