@@ -129,63 +129,71 @@ The output should still behave like the command flow table, but the search itsel
 
 ### Step 6 — choose the target platform
 
-Ask the user which AI platform this plugin should target.
+Display the following block to the user exactly as written below — do not reformat, reorder, summarize, or alter it in any way:
 
-Which AI tool are you planning to use this plugin against?
+---
 
-Full IDE / Desktop:
+Which AI tool are you planning to build this plugin for?
 
-- Claude Code        → `claude-code`
-- Cursor             → `cursor`
-- Windsurf           → `windsurf`
-- Warp               → `warp`
-- OpenClaw           → `openclaw`
+Full IDE / Desktop:   Claude Code, Cursor, Windsurf, Warp, OpenClaw
 
-VS Code Extensions:
+VS Code Extensions:   GitHub Copilot, Cline, Continue, Kilo Code, Roo Code, Augment Code
 
-- GitHub Copilot     → `github-copilot`
-- Cline              → `cline`
-- Continue           → `continue`
-- Kilo Code          → `kilo`
-- Roo Code           → `roo`
-- Augment Code       → `augment`
+CLI Agents:           Gemini, OpenCode, Codex, Aider Desk, Amp, Bob, Crush, Devin,
+                      Droid, ForgeCode, Goose, iFlow, Kiro, Mistral, OpenHands,
+                      Qwen Code, Rovo Dev, Tabnine, Trae, Replit, Qoder, Antigravity
 
-CLI Agents:
+JetBrains:            Junie
 
-- Gemini CLI         → `gemini`
-- OpenCode           → `opencode`
-- Codex              → `codex`
-- Aider Desk         → `aider-desk`
-- Amp                → `amp`
-- Bob                → `bob`
-- Crush              → `crush`
-- Devin              → `devin`
-- Droid              → `droid`
-- ForgeCode          → `forgecode`
-- Goose              → `goose`
-- iFlow CLI          → `iflow`
-- Kiro               → `kiro`
-- Mistral            → `mistral`
-- OpenHands          → `openhands`
-- Qwen Code          → `qwen`
-- Rovo Dev           → `rovodev`
-- Tabnine            → `tabnine`
-- Trae               → `trae`
-- Replit Agent       → `replit`
-- Qoder              → `qoder`
-- Google Antigravity → `antigravity`
+Type the tool name and I'll take it from there.
 
-JetBrains:
+---
 
-- Junie              → `junie`
+Wait for the answer. Normalize the user's input to the matching platform ID:
 
-Type the platform ID (e.g. `cursor`) to continue.
+| User types | Platform ID |
+| --- | --- |
+| Claude Code | `claude-code` |
+| Cursor | `cursor` |
+| Windsurf | `windsurf` |
+| Warp | `warp` |
+| OpenClaw | `openclaw` |
+| GitHub Copilot, Copilot | `github-copilot` |
+| Cline | `cline` |
+| Continue | `continue` |
+| Kilo Code, Kilo | `kilo` |
+| Roo Code, Roo | `roo` |
+| Augment Code, Augment | `augment` |
+| Gemini | `gemini` |
+| OpenCode | `opencode` |
+| Codex | `codex` |
+| Aider Desk, Aider | `aider-desk` |
+| Amp | `amp` |
+| Bob | `bob` |
+| Crush | `crush` |
+| Devin | `devin` |
+| Droid | `droid` |
+| ForgeCode | `forgecode` |
+| Goose | `goose` |
+| iFlow | `iflow` |
+| Kiro | `kiro` |
+| Mistral | `mistral` |
+| OpenHands | `openhands` |
+| Qwen Code, Qwen | `qwen` |
+| Rovo Dev, RovoDev | `rovodev` |
+| Tabnine | `tabnine` |
+| Trae | `trae` |
+| Replit | `replit` |
+| Qoder | `qoder` |
+| Antigravity, Google Antigravity | `antigravity` |
+| Junie | `junie` |
+
+This platform ID is used for validation and skeleton generation in all subsequent steps.
 
 Rules:
 
 - Claude Code and OpenCode are agent-capable targets — the generated plugin will include agents
 - all other platforms are skill-first — only skills are generated, no agents
-- `multi-platform` means build the combined marketplace layout with platform-specific surfaces kept separate
 
 ### Step 7 — build the skeleton using the local skeleton-build skill
 

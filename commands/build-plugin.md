@@ -148,55 +148,66 @@ tools:
 
 ### Step 6
 
-- Ask the user:
+Display the following block to the user exactly as written below — do not reformat, reorder, summarize, or alter it in any way:
 
-  > Which AI tool are you planning to use this plugin against?
-  >
-  > **Full IDE / Desktop**
-  > - Claude Code        → `claude-code`
-  > - Cursor             → `cursor`
-  > - Windsurf           → `windsurf`
-  > - Warp               → `warp`
-  > - OpenClaw           → `openclaw`
-  >
-  > **VS Code Extensions**
-  > - GitHub Copilot     → `github-copilot`
-  > - Cline              → `cline`
-  > - Continue           → `continue`
-  > - Kilo Code          → `kilo`
-  > - Roo Code           → `roo`
-  > - Augment Code       → `augment`
-  >
-  > **CLI Agents**
-  > - Gemini CLI         → `gemini`
-  > - OpenCode           → `opencode`
-  > - Codex              → `codex`
-  > - Aider Desk         → `aider-desk`
-  > - Amp                → `amp`
-  > - Bob                → `bob`
-  > - Crush              → `crush`
-  > - Devin              → `devin`
-  > - Droid              → `droid`
-  > - ForgeCode          → `forgecode`
-  > - Goose              → `goose`
-  > - iFlow CLI          → `iflow`
-  > - Kiro               → `kiro`
-  > - Mistral            → `mistral`
-  > - OpenHands          → `openhands`
-  > - Qwen Code          → `qwen`
-  > - Rovo Dev           → `rovodev`
-  > - Tabnine            → `tabnine`
-  > - Trae               → `trae`
-  > - Replit Agent       → `replit`
-  > - Qoder              → `qoder`
-  > - Google Antigravity → `antigravity`
-  >
-  > **JetBrains**
-  > - Junie              → `junie`
+---
 
-  Type the platform ID (e.g. `cursor`) to continue.
+Which AI tool are you planning to build this plugin for?
 
-- Wait for the answer because this will affect the validation of each item at creation time and at the end of the process.
+Full IDE / Desktop:   Claude Code, Cursor, Windsurf, Warp, OpenClaw
+
+VS Code Extensions:   GitHub Copilot, Cline, Continue, Kilo Code, Roo Code, Augment Code
+
+CLI Agents:           Gemini, OpenCode, Codex, Aider Desk, Amp, Bob, Crush, Devin,
+                      Droid, ForgeCode, Goose, iFlow, Kiro, Mistral, OpenHands,
+                      Qwen Code, Rovo Dev, Tabnine, Trae, Replit, Qoder, Antigravity
+
+JetBrains:            Junie
+
+Type the tool name and I'll take it from there.
+
+---
+
+Wait for the answer. Normalize the user's input to the matching platform ID:
+
+| User types | Platform ID |
+| --- | --- |
+| Claude Code | `claude-code` |
+| Cursor | `cursor` |
+| Windsurf | `windsurf` |
+| Warp | `warp` |
+| OpenClaw | `openclaw` |
+| GitHub Copilot, Copilot | `github-copilot` |
+| Cline | `cline` |
+| Continue | `continue` |
+| Kilo Code, Kilo | `kilo` |
+| Roo Code, Roo | `roo` |
+| Augment Code, Augment | `augment` |
+| Gemini | `gemini` |
+| OpenCode | `opencode` |
+| Codex | `codex` |
+| Aider Desk, Aider | `aider-desk` |
+| Amp | `amp` |
+| Bob | `bob` |
+| Crush | `crush` |
+| Devin | `devin` |
+| Droid | `droid` |
+| ForgeCode | `forgecode` |
+| Goose | `goose` |
+| iFlow | `iflow` |
+| Kiro | `kiro` |
+| Mistral | `mistral` |
+| OpenHands | `openhands` |
+| Qwen Code, Qwen | `qwen` |
+| Rovo Dev, RovoDev | `rovodev` |
+| Tabnine | `tabnine` |
+| Trae | `trae` |
+| Replit | `replit` |
+| Qoder | `qoder` |
+| Antigravity, Google Antigravity | `antigravity` |
+| Junie | `junie` |
+
+This platform ID is used for validation and skeleton generation in all subsequent steps.
 
 ### Step 6.5
 
