@@ -26,4 +26,4 @@ jobs:
         run: node plugins/core/scripts/validate-plugins.mjs .
 
       - name: Run markdownlint
-        run: npx markdownlint-cli2 "**/*.md" "#node_modules" "#plans"
+        run: npx markdownlint-cli2 "**/*.md" "#node_modules" "#plans" "#caveman" "#src"
