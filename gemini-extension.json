@@ -1,0 +1,6 @@
+{
+  "name": "plugin-architect",
+  "description": "Meta-plugin generator. Generates custom, codebase-focused plugins for AI coding tools.",
+  "version": "1.0.17",
+  "contextFileName": "GEMINI.md"
+}

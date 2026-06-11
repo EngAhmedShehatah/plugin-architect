@@ -1,7 +1,3 @@
----
-applyTo: "**"
----
-
 @./plugins/core/skills/build-plugin/SKILL.md
 @./plugins/core/skills/blueprint-select/SKILL.md
 @./plugins/core/skills/skeleton-build/SKILL.md
