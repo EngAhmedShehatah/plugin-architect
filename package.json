@@ -3,6 +3,25 @@
   "version": "1.0.0",
   "description": "A Claude Code plugin that devs can use to create focused custom plugins for their projects",
   "type": "module",
+  "bin": {
+    "plugin-architect": "./bin/install.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "plugins/",
+    "commands/",
+    ".codex/",
+    ".codex-plugin/",
+    "gemini-extension.json",
+    "GEMINI.md",
+    "AGENTS.md",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "lint": "markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
     "validate": "node plugins/core/scripts/validate-plugins.mjs .",

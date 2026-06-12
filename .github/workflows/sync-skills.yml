@@ -1,0 +1,57 @@
+name: sync-skills
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'plugins/core/skills/**'
+
+jobs:
+  sync:
+    name: Verify context files include all skills
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check GEMINI.md and AGENTS.md include all skills
+        run: |
+          set -e
+
+          SKILLS_DIR="plugins/core/skills"
+          GEMINI_MD="GEMINI.md"
+          AGENTS_MD="AGENTS.md"
+          MISSING=0
+
+          for skill_dir in "$SKILLS_DIR"/*/; do
+            skill_name="$(basename "$skill_dir")"
+            skill_path="./${SKILLS_DIR}/${skill_name}/SKILL.md"
+
+            # Skip non-directories and json config files
+            [ -d "$skill_dir" ] || continue
+            [ -f "${skill_dir}SKILL.md" ] || continue
+
+            if ! grep -qF "@${skill_path}" "$GEMINI_MD"; then
+              echo "❌ GEMINI.md is missing: @${skill_path}"
+              MISSING=1
+            fi
+
+            if ! grep -qF "@${skill_path}" "$AGENTS_MD"; then
+              echo "❌ AGENTS.md is missing: @${skill_path}"
+              MISSING=1
+            fi
+          done
+
+          if [ "$MISSING" -eq 0 ]; then
+            echo "✅ GEMINI.md and AGENTS.md include all skills"
+          else
+            echo ""
+            echo "Add the missing @-include lines to GEMINI.md and AGENTS.md and push again."
+            exit 1
+          fi

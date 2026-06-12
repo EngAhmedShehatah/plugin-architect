@@ -2,7 +2,7 @@
 name: skeleton-build
 description: Builds a platform-specific plugin skeleton from the checked-in official skeleton reference for that platform.
 input:
-  platform: one of "claude-code" or "github-copilot" — determines which skeleton to build
+  platform: one of 5 supported platform IDs — see routing table in Step 1. Determines which skeleton to build.
   user_name: author name for plugin.json
   user_email: author email for plugin.json
   surfaces: comma-separated list of surfaces to include (optional — defaults to all surfaces for the platform)
@@ -25,19 +25,22 @@ Choose the reference file from `platform`:
 
 | platform | reference file | default surfaces |
 |---|---|---|
-| `claude-code` | `./claude-code.skeleton.md` | `cli`, `desktop`, `vscode-extension` |
-| `github-copilot` | `./github-copilot.skeleton.md` | `cli`, `vscode-extension` |
+| `claude-code` | `./references/claude-code.skeleton.md` | `cli`, `desktop`, `vscode-extension` |
+| `github-copilot` | `./references/github-copilot.skeleton.md` | `cli`, `vscode-extension` |
+| `gemini` | `./references/gemini.skeleton.md` | `cli`, `desktop` |
+| `opencode` | `./references/opencode.skeleton.md` | `cli` |
+| `codex` | `./references/codex.skeleton.md` | `cli` |
 
 If `platform` is not one of the supported values, stop and report:
 
 ```text
 [BLOCKER] Unsupported platform: {platform}.
-Supported platforms: claude-code, github-copilot.
+Supported platforms: claude-code, github-copilot, gemini, opencode, codex.
 ```
 
 ### Step 2: Read the reference file
 
-Read the selected reference file from the same folder as this `SKILL.md`.
+Read the selected reference file from the `references/` subfolder alongside this `SKILL.md`.
 
 If the selected file is missing or unreadable, stop and report:
 
@@ -86,6 +89,12 @@ For `claude-code`, preserve the marketplace wrapper plus the nested plugin root.
 
 For `github-copilot`, preserve the documented root-level `plugin.json`, `AGENTS.md`, and Copilot customization paths.
 
+For `gemini`, generate `gemini-extension.json` + `GEMINI.md` with `@`-includes of all skill SKILL.md files under `skills/`.
+
+For `opencode`, generate `src/plugins/opencode/plugin.js` (ESM, `session.created` hook) + `package.json` + `AGENTS.md` with `@`-includes of all skills under `skills/`.
+
+For `codex`, generate `.codex-plugin/plugin.json` with `"skills": "./skills/"` pointing to the skills directory. Each skill folder becomes invocable as `@<skill-name>` inside Codex. Include an `interface.defaultPrompt` array telling Codex how to activate the plugin.
+
 Generate the minimal useful skeleton for the selected platform and surfaces:
 
 - `plugin.json` files: use only fields documented in the selected reference
@@ -107,7 +116,7 @@ Return the complete skeleton as a JSON object:
     "marketplace/.claude-plugin/plugin.json": "{...}",
     "marketplace/README.md": "# ..."
   },
-  "reference_file": "./claude-code.skeleton.md"
+  "reference_file": "./references/claude-code.skeleton.md"
 }
 ```
 

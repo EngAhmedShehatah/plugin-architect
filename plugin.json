@@ -9,6 +9,7 @@
   "skills": [
     "./plugins/core/skills/agent-create",
     "./plugins/core/skills/blueprint-select",
+    "./plugins/core/skills/build-plugin",
     "./plugins/core/skills/git-detect",
     "./plugins/core/skills/plugin-validate",
     "./plugins/core/skills/schema-scan",
