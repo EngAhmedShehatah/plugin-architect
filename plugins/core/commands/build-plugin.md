@@ -25,9 +25,9 @@ tools:
 ### Step 2
 
 - Spin up 3 subagents in parallel to do the scanning process:
-    1. git-detector agent at `../plugins/core/agents/git-detector.md`
-    2. schema-scanner agent at `../plugins/core/agents/schema-scanner.md`
-    3. tech-stack-detector at `../plugins/core/agents/tech-stack-detector.md`
+    1. git-detector agent at `../agents/git-detector.md`
+    2. schema-scanner agent at `../agents/schema-scanner.md`
+    3. tech-stack-detector at `../agents/tech-stack-detector.md`
 - Once they finish, check each agent's output report and print it out to the user
 
 ### Step 2.5
@@ -103,9 +103,9 @@ tools:
   > - deep mode
 
 - Provide short descriptions from:
-  - `../plugins/core/references/light.md`
-  - `../plugins/core/references/medium.md`
-  - `../plugins/core/references/deep.md`
+  - `../references/light.md`
+  - `../references/medium.md`
+  - `../references/deep.md`
 
 - Output the updated expected folder structure based on the chosen mode, including validation and CI pipeline.
 
@@ -189,7 +189,7 @@ Fetch:
 
 Invoke the `skeleton-builder` agent to create the platform-specific skeleton. Do not build the skeleton inline.
 
-Invoke at `../plugins/core/agents/skeleton-builder.md` with:
+Invoke at `../agents/skeleton-builder.md` with:
 
 - `platform`: normalized target platform ID from Step 6
 - `user_name`: `user_name` from the `git-detector` output in Step 2
@@ -206,14 +206,14 @@ Do not use plugin-architect's own metadata when writing generated manifest files
 
 For each skill/agent pair, invoke both subagents in parallel in the same message using the `Agent` tool:
 
-**skill-creator agent** at `../plugins/core/agents/skill-creator.md`. The prompt must include:
+**skill-creator agent** at `../agents/skill-creator.md`. The prompt must include:
 
 - `output path`: full path where the skill file must be written (e.g. `marketplace/plugins/core/skills/<skill-name>/SKILL.md`)
 - `blueprint`: inline description of what this skill must do, its scope, and constraints (derived from the blueprint content fetched in step 5)
 - `focus prompt`: one sentence instructing the skill to be codebase-specific — operating on the user's actual project, not a hypothetical codebase
 - `validator`: `marketplace/plugins/core/scripts/validate-plugins.mjs`
 
-**agent-creator agent** at `../plugins/core/agents/agent-creator.md`. The prompt must include:
+**agent-creator agent** at `../agents/agent-creator.md`. The prompt must include:
 
 - `output path`: full path where the agent file must be written (e.g. `marketplace/plugins/core/agents/<agent-name>.md`)
 - `blueprint`: inline description of the agent's role, tools it needs, and constraints (derived from the blueprint content fetched in step 5)
@@ -235,7 +235,7 @@ Copy the following scripts from `plugins/core/scripts/` into `marketplace/plugin
 
 ### Step 9
 
-Create the pilot.md command file at `marketplace/commands/` using the `pilot.template.md` content fetched in step 6.5.
+Create the pilot.md command file at `marketplace/plugins/core/commands/pilot.md` using the `pilot.template.md` content fetched in step 6.5.
 
 Follow the workflow described in the mode file depending on which mode user chose.
 

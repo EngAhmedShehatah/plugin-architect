@@ -237,6 +237,16 @@ for (const { name, source } of plugins) {
       if (!descCheck.ok) { err(`skill ${path.basename(sd)}: ${descCheck.reason}`); continue; }
       ok(`skill: ${path.basename(sd)}`);
     }
+    // Skills that exist on disk but are intentionally absent from the Claude Code plugin.json
+    // skills array because they serve as entry points via a different mechanism on this platform
+    // (e.g. build-plugin is registered as a command on Claude Code, not a skill).
+    //
+    // GENERATED PLUGIN NOTE: if every skill in this plugin is declared in the skills array,
+    // empty this set — do not carry over exceptions that do not apply to your plugin.
+    const SKILLS_MANIFEST_EXCEPTIONS = new Set([
+      'build-plugin',
+    ]);
+
     const fsSkillNames = new Set(
       fs.readdirSync(skillsDir, { withFileTypes: true })
         .filter((e) => e.isDirectory() && fs.existsSync(path.join(skillsDir, e.name, 'SKILL.md')))
@@ -245,7 +255,7 @@ for (const { name, source } of plugins) {
     const manifestSkillNames = new Set(
       (pm.data.skills || []).map((s) => path.basename(s.replace(/\/$/, '')))
     );
-    checkRegistration('skills', fsSkillNames, manifestSkillNames);
+    checkRegistration('skills', new Set([...fsSkillNames].filter((n) => !SKILLS_MANIFEST_EXCEPTIONS.has(n))), manifestSkillNames);
   }
 
   // Hooks JSON

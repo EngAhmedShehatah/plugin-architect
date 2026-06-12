@@ -234,7 +234,7 @@ Copy the telemetry / monitor artifacts to the generated marketplace in the corre
 
 ### Step 9 — create the pilot command
 
-Create `marketplace/commands/pilot.md` from the pilot template at:
+Create `marketplace/plugins/core/commands/pilot.md` from the pilot template at:
 
 - `plugins/core/references/pilot.template.md`
 
