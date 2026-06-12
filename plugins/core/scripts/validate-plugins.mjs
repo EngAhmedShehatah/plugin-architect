@@ -8,7 +8,6 @@
 //   - .claude-plugin/plugin.json present         → Claude Code validator
 //   - root plugin.json present (standalone)      → Copilot validator
 //   - gemini-extension.json present              → Gemini validator
-//   - .cursor/rules/ or .cursorrules present     → Cursor validator
 //   - src/plugins/opencode/plugin.js present     → opencode validator
 //   - .codex-plugin/plugin.json present          → Codex validator
 //
@@ -30,15 +29,12 @@ const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const CLAUDE_VALIDATOR   = path.join(SCRIPT_DIR, 'validate-claude-code.mjs');
 const COPILOT_VALIDATOR  = path.join(SCRIPT_DIR, 'validate-github-copilot.mjs');
 const GEMINI_VALIDATOR   = path.join(SCRIPT_DIR, 'validate-gemini.mjs');
-const CURSOR_VALIDATOR   = path.join(SCRIPT_DIR, 'validate-cursor.mjs');
 const OPENCODE_VALIDATOR = path.join(SCRIPT_DIR, 'validate-opencode.mjs');
 const CODEX_VALIDATOR    = path.join(SCRIPT_DIR, 'validate-codex.mjs');
 
 const claudeManifest  = path.join(ROOT, '.claude-plugin', 'plugin.json');
 const copilotManifest = path.join(ROOT, 'plugin.json');
 const geminiManifest  = path.join(ROOT, 'gemini-extension.json');
-const cursorRulesDir  = path.join(ROOT, '.cursor', 'rules');
-const cursorLegacy    = path.join(ROOT, '.cursorrules');
 const opencodePlugin  = path.join(ROOT, 'src', 'plugins', 'opencode', 'plugin.js');
 const codexManifest   = path.join(ROOT, '.codex-plugin', 'plugin.json');
 
@@ -61,17 +57,15 @@ function runValidator(label, validatorPath) {
 const hasClaude   = fs.existsSync(claudeManifest);
 const hasCopilot  = fs.existsSync(copilotManifest);
 const hasGemini   = fs.existsSync(geminiManifest);
-const hasCursor   = fs.existsSync(cursorRulesDir) || fs.existsSync(cursorLegacy);
 const hasOpencode = fs.existsSync(opencodePlugin);
 const hasCodex    = fs.existsSync(codexManifest);
 
-if (!hasClaude && !hasCopilot && !hasGemini && !hasCursor && !hasOpencode && !hasCodex) {
+if (!hasClaude && !hasCopilot && !hasGemini && !hasOpencode && !hasCodex) {
   console.error(`No plugin manifest found at ${ROOT}`);
   console.error('  Expected one of:');
   console.error(`    .claude-plugin/plugin.json     (Claude Code)`);
   console.error(`    plugin.json                    (GitHub Copilot)`);
   console.error(`    gemini-extension.json          (Gemini CLI)`);
-  console.error(`    .cursor/rules/ or .cursorrules (Cursor)`);
   console.error(`    src/plugins/opencode/plugin.js (opencode)`);
   console.error(`    .codex-plugin/plugin.json      (Codex CLI)`);
   process.exit(1);
@@ -80,7 +74,6 @@ if (!hasClaude && !hasCopilot && !hasGemini && !hasCursor && !hasOpencode && !ha
 if (hasClaude)   runValidator('Claude Code',    CLAUDE_VALIDATOR);
 if (hasCopilot)  runValidator('GitHub Copilot', COPILOT_VALIDATOR);
 if (hasGemini)   runValidator('Gemini',         GEMINI_VALIDATOR);
-if (hasCursor)   runValidator('Cursor',         CURSOR_VALIDATOR);
 if (hasOpencode) runValidator('opencode',        OPENCODE_VALIDATOR);
 if (hasCodex)    runValidator('Codex',           CODEX_VALIDATOR);
 
