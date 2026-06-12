@@ -2,7 +2,7 @@
 name: skeleton-build
 description: Builds a platform-specific plugin skeleton from the checked-in official skeleton reference for that platform.
 input:
-  platform: one of 34 supported platform IDs — see routing table in Step 1. Determines which skeleton to build.
+  platform: one of 5 supported platform IDs — see routing table in Step 1. Determines which skeleton to build.
   user_name: author name for plugin.json
   user_email: author email for plugin.json
   surfaces: comma-separated list of surfaces to include (optional — defaults to all surfaces for the platform)
