@@ -154,15 +154,7 @@ Display the following block to the user exactly as written below — do not refo
 
 Which AI tool are you planning to build this plugin for?
 
-Full IDE / Desktop:   Claude Code, Cursor, Windsurf, Warp, OpenClaw
-
-VS Code Extensions:   GitHub Copilot, Cline, Continue, Kilo Code, Roo Code, Augment Code
-
-CLI Agents:           Gemini, OpenCode, Codex, Aider Desk, Amp, Bob, Crush, Devin,
-                      Droid, ForgeCode, Goose, iFlow, Kiro, Mistral, OpenHands,
-                      Qwen Code, Rovo Dev, Tabnine, Trae, Replit, Qoder, Antigravity
-
-JetBrains:            Junie
+Claude Code, GitHub Copilot, Gemini, OpenCode, Codex
 
 Type the tool name and I'll take it from there.
 
@@ -173,41 +165,17 @@ Wait for the answer. Normalize the user's input to the matching platform ID:
 | User types | Platform ID |
 | --- | --- |
 | Claude Code | `claude-code` |
-| Cursor | `cursor` |
-| Windsurf | `windsurf` |
-| Warp | `warp` |
-| OpenClaw | `openclaw` |
 | GitHub Copilot, Copilot | `github-copilot` |
-| Cline | `cline` |
-| Continue | `continue` |
-| Kilo Code, Kilo | `kilo` |
-| Roo Code, Roo | `roo` |
-| Augment Code, Augment | `augment` |
 | Gemini | `gemini` |
 | OpenCode | `opencode` |
 | Codex | `codex` |
-| Aider Desk, Aider | `aider-desk` |
-| Amp | `amp` |
-| Bob | `bob` |
-| Crush | `crush` |
-| Devin | `devin` |
-| Droid | `droid` |
-| ForgeCode | `forgecode` |
-| Goose | `goose` |
-| iFlow | `iflow` |
-| Kiro | `kiro` |
-| Mistral | `mistral` |
-| OpenHands | `openhands` |
-| Qwen Code, Qwen | `qwen` |
-| Rovo Dev, RovoDev | `rovodev` |
-| Tabnine | `tabnine` |
-| Trae | `trae` |
-| Replit | `replit` |
-| Qoder | `qoder` |
-| Antigravity, Google Antigravity | `antigravity` |
-| Junie | `junie` |
 
 This platform ID is used for validation and skeleton generation in all subsequent steps.
+
+Rules:
+
+- Claude Code and OpenCode are agent-capable targets — the generated plugin will include agents
+- GitHub Copilot, Gemini, and Codex are skill-first — only skills are generated, no agents
 
 ### Step 6.5
 
@@ -256,12 +224,11 @@ Spawn both `Agent` calls for the same pair together in one message (parallel). W
 
 Copy the following scripts from `plugins/core/scripts/` into `marketplace/plugins/core/scripts/`:
 
-- `session-init.mjs`      → `marketplace/plugins/core/scripts/session-init.mjs`
-- `version-bump.mjs`      → `marketplace/plugins/core/scripts/version-bump.mjs`
-- `validate-plugins.mjs`  → `marketplace/plugins/core/scripts/validate-plugins.mjs`
+- `session-init.mjs`             → `marketplace/plugins/core/scripts/session-init.mjs`
+- `version-bump.mjs`             → `marketplace/plugins/core/scripts/version-bump.mjs`
+- `validate-plugins.mjs`         → `marketplace/plugins/core/scripts/validate-plugins.mjs`
 - `validate-claude-code.mjs`     → `marketplace/plugins/core/scripts/validate-claude-code.mjs`
 - `validate-codex.mjs`           → `marketplace/plugins/core/scripts/validate-codex.mjs`
-- `validate-cursor.mjs`          → `marketplace/plugins/core/scripts/validate-cursor.mjs`
 - `validate-gemini.mjs`          → `marketplace/plugins/core/scripts/validate-gemini.mjs`
 - `validate-github-copilot.mjs`  → `marketplace/plugins/core/scripts/validate-github-copilot.mjs`
 - `validate-opencode.mjs`        → `marketplace/plugins/core/scripts/validate-opencode.mjs`

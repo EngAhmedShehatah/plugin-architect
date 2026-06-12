@@ -27,47 +27,15 @@ Choose the reference file from `platform`:
 |---|---|---|
 | `claude-code` | `./references/claude-code.skeleton.md` | `cli`, `desktop`, `vscode-extension` |
 | `github-copilot` | `./references/github-copilot.skeleton.md` | `cli`, `vscode-extension` |
-| `cursor` | `./references/cursor.skeleton.md` | `desktop` |
-| `windsurf` | `./references/windsurf.skeleton.md` | `desktop` |
-| `cline` | `./references/cline.skeleton.md` | `vscode-extension` |
 | `gemini` | `./references/gemini.skeleton.md` | `cli`, `desktop` |
 | `opencode` | `./references/opencode.skeleton.md` | `cli` |
 | `codex` | `./references/codex.skeleton.md` | `cli` |
-| `continue` | `./references/continue.skeleton.md` | `vscode-extension` |
-| `kilo` | `./references/kilo.skeleton.md` | `vscode-extension` |
-| `roo` | `./references/roo.skeleton.md` | `vscode-extension` |
-| `augment` | `./references/augment.skeleton.md` | `vscode-extension` |
-| `aider-desk` | `./references/aider-desk.skeleton.md` | `cli` |
-| `amp` | `./references/amp.skeleton.md` | `cli` |
-| `bob` | `./references/bob.skeleton.md` | `cli` |
-| `crush` | `./references/crush.skeleton.md` | `cli` |
-| `devin` | `./references/devin.skeleton.md` | `cli` |
-| `droid` | `./references/droid.skeleton.md` | `cli` |
-| `forgecode` | `./references/forgecode.skeleton.md` | `cli` |
-| `goose` | `./references/goose.skeleton.md` | `cli` |
-| `iflow` | `./references/iflow.skeleton.md` | `cli` |
-| `kiro` | `./references/kiro.skeleton.md` | `cli` |
-| `mistral` | `./references/mistral.skeleton.md` | `cli` |
-| `openhands` | `./references/openhands.skeleton.md` | `cli` |
-| `qwen` | `./references/qwen.skeleton.md` | `cli` |
-| `rovodev` | `./references/rovodev.skeleton.md` | `cli` |
-| `tabnine` | `./references/tabnine.skeleton.md` | `cli` |
-| `trae` | `./references/trae.skeleton.md` | `cli` |
-| `warp` | `./references/warp.skeleton.md` | `desktop` |
-| `replit` | `./references/replit.skeleton.md` | `cli` |
-| `junie` | `./references/junie.skeleton.md` | `jetbrains-plugin` |
-| `qoder` | `./references/qoder.skeleton.md` | `cli` |
-| `antigravity` | `./references/antigravity.skeleton.md` | `cli` |
-| `openclaw` | `./references/openclaw.skeleton.md` | `desktop` |
 
 If `platform` is not one of the supported values, stop and report:
 
 ```text
 [BLOCKER] Unsupported platform: {platform}.
-Supported platforms: claude-code, github-copilot, cursor, windsurf, cline, gemini,
-opencode, codex, continue, kilo, roo, augment, aider-desk, amp, bob, crush, devin,
-droid, forgecode, goose, iflow, kiro, mistral, openhands, qwen, rovodev, tabnine,
-trae, warp, replit, junie, qoder, antigravity, openclaw.
+Supported platforms: claude-code, github-copilot, gemini, opencode, codex.
 ```
 
 ### Step 2: Read the reference file
@@ -117,8 +85,6 @@ Use only content from the reference file. Do not add directories, files, manifes
 
 Construct the generated skeleton from the parsed reference.
 
-**Native plugin system platforms:**
-
 For `claude-code`, preserve the marketplace wrapper plus the nested plugin root. The nested plugin keeps the documented `.claude-plugin/plugin.json` manifest location and root-level plugin component folders under `marketplace/plugins/core/`.
 
 For `github-copilot`, preserve the documented root-level `plugin.json`, `AGENTS.md`, and Copilot customization paths.
@@ -128,44 +94,6 @@ For `gemini`, generate `gemini-extension.json` + `GEMINI.md` with `@`-includes o
 For `opencode`, generate `src/plugins/opencode/plugin.js` (ESM, `session.created` hook) + `package.json` + `AGENTS.md` with `@`-includes of all skills under `skills/`.
 
 For `codex`, generate `.codex-plugin/plugin.json` with `"skills": "./skills/"` pointing to the skills directory. Each skill folder becomes invocable as `@<skill-name>` inside Codex. Include an `interface.defaultPrompt` array telling Codex how to activate the plugin.
-
-**Rules-file platforms (VS Code extension or desktop IDE):**
-
-For `cursor`, generate `.cursor/rules/<plugin-name>.mdc` with `alwaysApply: true` frontmatter and skills listed under `skills/`.
-
-For `windsurf`, generate `.windsurfrules` at the project root with skills listed under `skills/`.
-
-For `cline`, generate `.clinerules` at the project root with skills listed under `skills/`.
-
-For `continue`, generate `.continue/rules/<plugin-name>.md` with skill awareness text and skills listed under `skills/`.
-
-For `kilo`, generate `.kilocode/rules/<plugin-name>.mdc` with `alwaysApply: true` frontmatter and skills listed under `skills/`.
-
-For `roo`, generate `.roorules` at the project root with skills listed under `skills/`.
-
-**Skills-only platforms (no project-level config file — skills registry integration only):**
-
-For `augment`, `amp`, `bob`, `crush`, `droid`, `forgecode`, `iflow`, `kiro`, `mistral`, `qwen`, `rovodev`, `tabnine`, `trae`, `warp`, and `replit`: generate the `skills/` directory with skill files only. No project-level config file. Skills are installed via `npx skills add -a <profile>`.
-
-**CLI platforms with project context files:**
-
-For `aider-desk`, generate `CONVENTIONS.md` at the project root with skill awareness text and skills listed under `skills/`.
-
-For `devin`, generate `playbook.md` at the project root with skill awareness text and skills listed under `skills/`.
-
-For `goose`, generate `.goose/config.yaml` with skill extension registration and skills listed under `skills/`.
-
-For `openhands`, generate `.openhands/microagents/<plugin-name>.md` with the microagent definition and skills listed under `skills/`.
-
-For `junie`, generate `.junie/guidelines.md` with skill awareness text and skills listed under `skills/`.
-
-For `qoder`, generate `.qoder/` directory with config and skills listed under `skills/`.
-
-For `antigravity`, generate `.gemini/antigravity/` directory with config and skills listed under `skills/`.
-
-**Workspace-level platforms:**
-
-For `openclaw`, generate the SOUL.md marker-fenced snippet and the workspace skill file under `skills/`. The installer copies skills to `~/.openclaw/workspace/skills/`.
 
 Generate the minimal useful skeleton for the selected platform and surfaces:
 

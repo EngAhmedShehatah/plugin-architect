@@ -2,7 +2,7 @@
 
 > **Don't install generic plugins. Install yours.**
 
-A smart meta-plugin that turns generic AI coding assistants into something built specifically for your project — your stack, your conventions, your workflow. Supports Claude Code (agents) and GitHub Copilot (skills).
+A smart meta-plugin that turns generic AI coding assistants into something built specifically for your project — your stack, your conventions, your workflow. Supports Claude Code, GitHub Copilot, Gemini, OpenCode, and Codex.
 
 ---
 
@@ -73,11 +73,14 @@ plugin-architect/
 │       ├── resources/
 │       │   └── pilot.template.md   ← template for generated pilot command
 │       ├── scripts/
-│       │   ├── session-init.mjs    ← runs on SessionStart hook
+│       │   ├── session-init.mjs         ← runs on SessionStart hook
+│       │   ├── version-bump.mjs         ← auto-bumps patch version on every commit
 │       │   ├── validate-plugins.mjs
 │       │   ├── validate-claude-code.mjs
 │       │   ├── validate-github-copilot.mjs
-│       │   └── version-bump.mjs    ← auto-bumps patch version on every commit
+│       │   ├── validate-gemini.mjs
+│       │   ├── validate-opencode.mjs
+│       │   └── validate-codex.mjs
 │       ├── skills/
 │       │   ├── skill.config.json
 │       │   ├── agent-create/
@@ -87,11 +90,8 @@ plugin-architect/
 │       │   │   └── resources/
 │       │   │       └── urls.json
 │       │   ├── build-plugin/
-│       │   │   ├── SKILL.md        ← main orchestrator (skill format)
-│       │   │   ├── build-plugin.config.json
-│       │   │   └── references/
-│       │   │       ├── agent-flow.md
-│       │   │       └── sequential-flow.md
+│       │   │   ├── SKILL.md             ← main orchestrator (skill format)
+│       │   │   └── build-plugin.config.json
 │       │   ├── git-detect/
 │       │   │   └── SKILL.md
 │       │   ├── plugin-validate/
@@ -100,8 +100,12 @@ plugin-architect/
 │       │   │   └── SKILL.md
 │       │   ├── skeleton-build/
 │       │   │   ├── SKILL.md
-│       │   │   ├── claude-code.skeleton.md
-│       │   │   └── github-copilot.skeleton.md
+│       │   │   └── references/
+│       │   │       ├── claude-code.skeleton.md
+│       │   │       ├── github-copilot.skeleton.md
+│       │   │       ├── gemini.skeleton.md
+│       │   │       ├── opencode.skeleton.md
+│       │   │       └── codex.skeleton.md
 │       │   ├── skill-create/
 │       │   │   └── SKILL.md
 │       │   └── tech-stack-detect/
@@ -121,9 +125,12 @@ plugin-architect/
 
 ## Requirements
 
-- **Claude Code** v2.1.105 or later (for agents, agents are not required on skill-only platforms)
-- **GitHub Copilot** in VS Code or CLI (for skill-only usage)
-- Node.js **v18** or later
+- **Claude Code** v2.1.105 or later — agents + skills
+- **GitHub Copilot** in VS Code or CLI — skills only
+- **Gemini CLI** — skills only
+- **OpenCode** — agents + skills
+- **Codex CLI** — skills only
+- Node.js **v18** or later (required for all platforms)
 
 ---
 
@@ -281,13 +288,13 @@ your-project/
 
 ## Supported AI tools
 
-| Tool        | Status             | Build flow          |
-| ----------- | ------------------ | ------------------- |
-| Claude Code | ✅ Supported       | Agent (parallel)    |
-| GitHub Copilot | ✅ Supported    | Skill (sequential)  |
-| Opencode    | 🔜 Coming soon     | —                   |
-| Codex       | 🔜 Coming soon     | —                   |
-| Cursor      | 🔜 Coming soon     | —                   |
+| Tool           | Status       | Build flow         |
+| -------------- | ------------ | ------------------ |
+| Claude Code    | ✅ Supported | Agent (parallel)   |
+| GitHub Copilot | ✅ Supported | Skill (sequential) |
+| Gemini         | ✅ Supported | Skill (sequential) |
+| OpenCode       | ✅ Supported | Agent (parallel)   |
+| Codex          | ✅ Supported | Skill (sequential) |
 
 ---
 
