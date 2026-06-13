@@ -1,7 +1,7 @@
 {
   "name": "plugin-architect",
   "description": "A meta-plugin that helps developers generate custom, codebase-focused Claude Code plugins for their projects.",
-  "version": "1.0.43",
+  "version": "1.0.44",
   "author": {
     "name": "Ahmed Shehatah",
     "email": "engahmedshehatah@gmail.com"
