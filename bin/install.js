@@ -29,43 +29,11 @@ const IS_WIN = process.platform === 'win32';
 //   soft     — true = opt-in only via --only; never auto-detected
 
 const PROVIDERS = [
-  // ── Native installs ────────────────────────────────────────────────────────
   { id: 'claude',      label: 'Claude Code',       detect: 'command:claude' },
   { id: 'gemini',      label: 'Gemini CLI',         detect: 'command:gemini' },
   { id: 'opencode',    label: 'opencode',           detect: 'command:opencode' },
-  { id: 'openclaw',    label: 'OpenClaw',           detect: 'command:openclaw||dir:.openclaw/workspace' },
-  { id: 'codex',       label: 'Codex CLI',          detect: 'command:codex' },
-  // ── npx-skills agents ──────────────────────────────────────────────────────
-  { id: 'cursor',      label: 'Cursor',             detect: 'command:cursor||macapp:Cursor',                             profile: 'cursor' },
-  { id: 'windsurf',    label: 'Windsurf',           detect: 'command:windsurf||macapp:Windsurf',                         profile: 'windsurf' },
-  { id: 'cline',       label: 'Cline',              detect: 'vscode-ext:cline',                                          profile: 'cline' },
-  { id: 'continue',    label: 'Continue',           detect: 'vscode-ext:continue.continue||vscode-ext:continue',         profile: 'continue' },
-  { id: 'kilo',        label: 'Kilo Code',          detect: 'vscode-ext:kilocode',                                       profile: 'kilo' },
-  { id: 'roo',         label: 'Roo Code',           detect: 'vscode-ext:roo||vscode-ext:rooveterinaryinc.roo-cline||cursor-ext:roo', profile: 'roo' },
-  { id: 'augment',     label: 'Augment Code',       detect: 'vscode-ext:augment||jetbrains-plugin:augment',              profile: 'augment' },
-  { id: 'copilot',     label: 'GitHub Copilot',     detect: '',                          soft: true,                     profile: 'github-copilot' },
-  { id: 'aider-desk',  label: 'Aider Desk',         detect: 'command:aider',                                             profile: 'aider-desk' },
-  { id: 'amp',         label: 'Sourcegraph Amp',    detect: 'command:amp',                                               profile: 'amp' },
-  { id: 'bob',         label: 'IBM Bob',            detect: 'command:bob',                                               profile: 'bob' },
-  { id: 'crush',       label: 'Crush',              detect: 'command:crush',                                             profile: 'crush' },
-  { id: 'devin',       label: 'Devin',              detect: 'command:devin',                                             profile: 'devin' },
-  { id: 'droid',       label: 'Droid',              detect: 'command:droid',                                             profile: 'droid' },
-  { id: 'forgecode',   label: 'ForgeCode',          detect: 'command:forge',                                             profile: 'forgecode' },
-  { id: 'goose',       label: 'Block Goose',        detect: 'command:goose',                                             profile: 'goose' },
-  { id: 'iflow',       label: 'iFlow CLI',          detect: 'command:iflow',                                             profile: 'iflow-cli' },
-  { id: 'kiro',        label: 'Kiro CLI',           detect: 'command:kiro',                                              profile: 'kiro-cli' },
-  { id: 'mistral',     label: 'Mistral Vibe',       detect: 'command:mistral',                                           profile: 'mistral-vibe' },
-  { id: 'openhands',   label: 'OpenHands',          detect: 'command:openhands',                                         profile: 'openhands' },
-  { id: 'qwen',        label: 'Qwen Code',          detect: 'command:qwen',                                              profile: 'qwen-code' },
-  { id: 'rovodev',     label: 'Atlassian Rovo Dev', detect: 'command:rovodev',                                           profile: 'rovodev' },
-  { id: 'tabnine',     label: 'Tabnine CLI',        detect: 'command:tabnine',                                           profile: 'tabnine-cli' },
-  { id: 'trae',        label: 'Trae',               detect: 'command:trae',                                              profile: 'trae' },
-  { id: 'warp',        label: 'Warp',               detect: 'command:warp',                                              profile: 'warp' },
-  { id: 'replit',      label: 'Replit Agent',       detect: 'command:replit',                                            profile: 'replit' },
-  // ── Soft probes — opt-in via --only ────────────────────────────────────────
-  { id: 'junie',       label: 'JetBrains Junie',   detect: 'jetbrains-plugin:junie',    soft: true,                     profile: 'junie' },
-  { id: 'qoder',       label: 'Qoder',              detect: 'dir:.qoder',                soft: true,                     profile: 'qoder' },
-  { id: 'antigravity', label: 'Google Antigravity', detect: 'dir:.gemini/antigravity',   soft: true,                     profile: 'antigravity' },
+  { id: 'copilot',     label: 'GitHub Copilot',     detect: 'command:copilot', soft: true, profile: 'github-copilot' },
+  { id: 'codex',       label: 'Codex CLI',          detect: 'command:codex' }
 ];
 
 // ─── DETECTION ────────────────────────────────────────────────────────────────
