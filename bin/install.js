@@ -191,11 +191,9 @@ function installClaude({ dry, force }) {
       return;
     }
   }
-  if (dry) { info('Claude Code — claude plugin install plugin-architect@<repo> + core@plugin-architect'); return; }
-  const ok1 = run('claude', ['plugin', 'install', 'plugin-architect@https://github.com/EngAhmedShehatah/plugin-architect']);
-  if (!ok1) { fail('Claude Code — marketplace install failed'); return; }
-  const ok2 = run('claude', ['plugin', 'install', 'core@plugin-architect']);
-  if (ok2) ok('Claude Code'); else fail('Claude Code — core plugin install failed');
+  if (dry) { info('Claude Code — claude plugin install core@plugin-architect'); return; }
+  const ok = run('claude', ['plugin', 'install', 'core@plugin-architect']);
+  if (ok) ok('Claude Code'); else fail('Claude Code — core plugin install failed');
 }
 
 function installGemini({ dry, force }) {
