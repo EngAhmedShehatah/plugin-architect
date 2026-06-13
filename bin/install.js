@@ -192,8 +192,8 @@ function installClaude({ dry, force }) {
     }
   }
   if (dry) { info('Claude Code — claude plugin install core@plugin-architect'); return; }
-  const ok = run('claude', ['plugin', 'install', 'core@plugin-architect']);
-  if (ok) ok('Claude Code'); else fail('Claude Code — core plugin install failed');
+  const installed = run('claude', ['plugin', 'install', 'core@plugin-architect']);
+  if (installed) ok('Claude Code'); else fail('Claude Code — core plugin install failed');
 }
 
 function installGemini({ dry, force }) {
