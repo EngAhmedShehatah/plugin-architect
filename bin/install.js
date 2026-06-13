@@ -32,7 +32,7 @@ const PROVIDERS = [
   { id: 'claude',      label: 'Claude Code',       detect: 'command:claude' },
   { id: 'gemini',      label: 'Gemini CLI',         detect: 'command:gemini' },
   { id: 'opencode',    label: 'opencode',           detect: 'command:opencode' },
-  { id: 'copilot',     label: 'GitHub Copilot',     detect: 'command:copilot', soft: true, profile: 'github-copilot' },
+  { id: 'copilot',     label: 'GitHub Copilot',     detect: 'command:copilot' },
   { id: 'codex',       label: 'Codex CLI',          detect: 'command:codex' }
 ];
 
