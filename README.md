@@ -28,101 +28,6 @@ Most AI coding plugins are generic. They work for any project, which means they'
 
 ---
 
-## File tree
-
-```text
-plugin-architect/
-├── AGENTS.md                       ← Copilot agent instructions
-├── plugin.json                     ← Copilot marketplace manifest
-├── .claude-plugin/
-│   ├── marketplace.json
-│   ├── plugin.config.json          ← $schema reference
-│   └── plugin.json                 ← Claude Code marketplace manifest
-├── .github/
-│   ├── ISSUE_TEMPLATE/
-│   │   ├── bug_report.md
-│   │   └── feature_request.md
-│   └── workflows/
-│       └── validate.yml            ← CI validation on every PR
-├── .githooks/
-│   └── pre-commit                  ← version bump + markdown lint + validator orchestrator
-├── testing/
-│   └── surfaces.md                 ← install/test matrix for supported AI tools
-├── plugins/
-│   └── core/
-│       ├── .claude-plugin/
-│       │   ├── plugin.config.json
-│       │   └── plugin.json         ← core plugin manifest
-│       ├── .mcp.json               ← MCP server config
-│       ├── agents/
-│       │   ├── agent.config.json   ← frontmatter schema reference
-│       │   ├── agent-creator.md
-│       │   ├── blueprint-selector.md
-│       │   ├── git-detector.md
-│       │   ├── plugin-validator.md
-│       │   ├── schema-scanner.md
-│       │   ├── skeleton-builder.md
-│       │   ├── skill-creator.md
-│       │   └── tech-stack-detector.md
-│       ├── hooks/
-│       │   └── config.json
-│       ├── modes/
-│       │   ├── deep.md
-│       │   ├── light.md
-│       │   └── medium.md
-│       ├── resources/
-│       │   └── pilot.template.md   ← template for generated pilot command
-│       ├── scripts/
-│       │   ├── session-init.mjs         ← runs on SessionStart hook
-│       │   ├── version-bump.mjs         ← auto-bumps patch version on every commit
-│       │   ├── validate-plugins.mjs
-│       │   ├── validate-claude-code.mjs
-│       │   ├── validate-github-copilot.mjs
-│       │   ├── validate-gemini.mjs
-│       │   ├── validate-opencode.mjs
-│       │   └── validate-codex.mjs
-│       ├── skills/
-│       │   ├── skill.config.json
-│       │   ├── agent-create/
-│       │   │   └── SKILL.md
-│       │   ├── blueprint-select/
-│       │   │   ├── SKILL.md
-│       │   │   └── resources/
-│       │   │       └── urls.json
-│       │   ├── build-plugin/
-│       │   │   ├── SKILL.md             ← main orchestrator (skill format)
-│       │   │   └── build-plugin.config.json
-│       │   ├── git-detect/
-│       │   │   └── SKILL.md
-│       │   ├── plugin-validate/
-│       │   │   └── SKILL.md
-│       │   ├── schema-scan/
-│       │   │   └── SKILL.md
-│       │   ├── skeleton-build/
-│       │   │   ├── SKILL.md
-│       │   │   └── references/
-│       │   │       ├── claude-code.skeleton.md
-│       │   │       ├── github-copilot.skeleton.md
-│       │   │       ├── gemini.skeleton.md
-│       │   │       ├── opencode.skeleton.md
-│       │   │       └── codex.skeleton.md
-│       │   ├── skill-create/
-│       │   │   └── SKILL.md
-│       │   └── tech-stack-detect/
-│       │       └── SKILL.md
-├── .gitignore
-├── .markdownlint.json
-├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
-├── SECURITY.md
-├── package.json
-└── package-lock.json
-```
-
----
-
 ## Requirements
 
 - **Claude Code** v2.1.105 or later — agents + skills
@@ -136,46 +41,88 @@ plugin-architect/
 
 ## Installation
 
-Installation varies by platform.
-
-### Claude Code — plugin install
-
-#### Step 1 — Install the marketplace
+<details>
+<summary>Claude Code</summary>
 
 ```bash
 claude plugin install plugin-architect@https://github.com/EngAhmedShehatah/plugin-architect
-```
-
-Or install from a local clone:
-
-```bash
-git clone https://github.com/EngAhmedShehatah/plugin-architect.git
-claude plugin install ./plugin-architect --scope project
-```
-
-#### Step 2 — Install the core plugin
-
-```bash
 claude plugin install core@plugin-architect
 ```
 
-#### Step 3 — Verify
+Or via npx:
 
 ```bash
-claude plugin list
+npx github:EngAhmedShehatah/plugin-architect --only claude
 ```
 
-You should see `plugin-architect` marketplace and `core` plugin listed.
+</details>
 
-### GitHub Copilot — instructions + skills
+<details>
+<summary>GitHub Copilot</summary>
 
-Clone the repo:
+Open VS Code → Chat panel → click the gear icon → paste:
+
+```text
+https://github.com/EngAhmedShehatah/plugin-architect
+```
+
+Or via npx:
 
 ```bash
-git clone https://github.com/EngAhmedShehatah/plugin-architect.git
+npx github:EngAhmedShehatah/plugin-architect --only copilot
 ```
 
-Open the folder in VS Code with GitHub Copilot enabled, or use the Copilot CLI inside the project directory. Copilot will read `AGENTS.md` and `plugin.json` to load the workspace-level instructions and available skills.
+</details>
+
+<details>
+<summary>Gemini</summary>
+
+```bash
+gemini extensions install https://github.com/EngAhmedShehatah/plugin-architect
+```
+
+Or via npx:
+
+```bash
+npx github:EngAhmedShehatah/plugin-architect --only gemini
+```
+
+</details>
+
+<details>
+<summary>Codex</summary>
+
+```bash
+codex plugin marketplace add https://github.com/EngAhmedShehatah/plugin-architect
+```
+
+Or via npx:
+
+```bash
+npx github:EngAhmedShehatah/plugin-architect --only codex
+```
+
+</details>
+
+<details>
+<summary>opencode</summary>
+
+```bash
+npx github:EngAhmedShehatah/plugin-architect --only opencode
+```
+
+</details>
+
+<details>
+<summary>All detected tools at once</summary>
+
+```bash
+npx github:EngAhmedShehatah/plugin-architect
+```
+
+Detects which of the 5 tools are installed and asks you to confirm each before installing.
+
+</details>
 
 ---
 
