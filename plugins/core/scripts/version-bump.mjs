@@ -12,6 +12,16 @@ const BUMP_TYPE = (process.env.BUMP_TYPE || 'patch').toLowerCase();
 
 const IGNORE_PATTERNS = [/^\.github\//i, /^plans\//i, /^debug\//i, /^LICENSE$/i, /^CHANGELOG/i];
 
+// All root-level platform manifests. Each that exists gets bumped to the same
+// new version so all platforms stay in sync. The first entry is the version
+// source — its current value is what gets bumped, then written to all others.
+const PLATFORM_MANIFESTS = [
+  '.claude-plugin/plugin.json',
+  'plugin.json',
+  '.codex-plugin/plugin.json',
+  'gemini-extension.json',
+];
+
 function log(msg) { console.log(`[version-bump] ${msg}`); }
 
 function bumpVersion(version, type) {
@@ -39,14 +49,14 @@ function stageFile(absPath) {
   execSync(`git add "${rel}"`, { cwd: ROOT, stdio: 'inherit' });
 }
 
-function bumpJsonVersion(absPath, label) {
+function writeVersion(absPath, newVersion, label) {
   const data = JSON.parse(readFileSync(absPath, 'utf-8'));
   if (!data.version) { log(`⚠  ${label}: no version field, skipping`); return; }
   const old = data.version;
-  data.version = bumpVersion(old, BUMP_TYPE);
+  data.version = newVersion;
   writeFileSync(absPath, JSON.stringify(data, null, 2) + '\n');
   stageFile(absPath);
-  log(`${label}: ${old} → ${data.version}`);
+  log(`${label}: ${old} → ${newVersion}`);
 }
 
 function isMergeCommit() {
@@ -60,21 +70,36 @@ function main() {
   const allStaged = getStagedFiles();
   if (!allStaged.length) { log('no staged files, skipping'); return; }
 
+  const meaningful = allStaged.filter((f) => !shouldIgnore(f));
+
+  // Sub-plugins: bump their own manifest only when their folder has changes.
   const rootManifestPath = join(ROOT, '.claude-plugin', 'plugin.json');
   const rootManifest = JSON.parse(readFileSync(rootManifestPath, 'utf-8'));
   const pluginSources = rootManifest.plugins || [];
-
-  const meaningful = allStaged.filter((f) => !shouldIgnore(f));
   for (const source of pluginSources) {
     const pluginFolder = source.replace(/^\.\//, '');
     const hasChanges = meaningful.some((f) => f.startsWith(pluginFolder + '/') || f === pluginFolder);
     if (!hasChanges) { log(`${pluginFolder}: no changes, skipping`); continue; }
     const pluginManifest = join(ROOT, pluginFolder, '.claude-plugin', 'plugin.json');
     if (!existsSync(pluginManifest)) { log(`⚠  ${pluginFolder}/.claude-plugin/plugin.json not found, skipping`); continue; }
-    bumpJsonVersion(pluginManifest, pluginFolder);
+    const subData = JSON.parse(readFileSync(pluginManifest, 'utf-8'));
+    const newSubVer = bumpVersion(subData.version, BUMP_TYPE);
+    writeVersion(pluginManifest, newSubVer, pluginFolder);
   }
 
-  bumpJsonVersion(rootManifestPath, '.claude-plugin/plugin.json');
+  // Root platform manifests: derive new version from the first present manifest,
+  // then write the same version to all others so they stay in sync.
+  const present = PLATFORM_MANIFESTS.map((rel) => join(ROOT, rel)).filter(existsSync);
+  if (!present.length) { log('no platform manifests found'); return; }
+
+  const sourceData = JSON.parse(readFileSync(present[0], 'utf-8'));
+  const newVersion = bumpVersion(sourceData.version, BUMP_TYPE);
+
+  for (const absPath of present) {
+    const label = absPath.slice(ROOT.length + 1);
+    writeVersion(absPath, newVersion, label);
+  }
+
   log(`✓ done (${BUMP_TYPE})`);
 }
 

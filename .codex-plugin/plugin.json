@@ -1,6 +1,6 @@
 {
   "name": "plugin-architect",
-  "version": "1.0.18",
+  "version": "1.0.43",
   "description": "Meta-plugin generator. Generates custom, codebase-focused plugins for AI coding tools.",
   "author": {
     "name": "Ahmed Shehatah",
@@ -9,7 +9,12 @@
   "homepage": "https://github.com/EngAhmedShehatah/plugin-architect",
   "repository": "https://github.com/EngAhmedShehatah/plugin-architect",
   "license": "MIT",
-  "keywords": ["plugin", "code-generation", "ai-tools", "scaffold"],
+  "keywords": [
+    "plugin",
+    "code-generation",
+    "ai-tools",
+    "scaffold"
+  ],
   "skills": "./plugins/core/skills/",
   "interface": {
     "displayName": "Plugin Architect",
@@ -17,7 +22,9 @@
     "longDescription": "Plugin Architect analyzes your project and generates a structured, production-ready plugin for Claude Code, GitHub Copilot, Gemini, opencode, or Codex — tailored to your actual tech stack.",
     "developerName": "Ahmed Shehatah",
     "category": "Productivity",
-    "capabilities": ["Write"],
+    "capabilities": [
+      "Write"
+    ],
     "websiteURL": "https://github.com/EngAhmedShehatah/plugin-architect",
     "privacyPolicyURL": "https://github.com/EngAhmedShehatah/plugin-architect/blob/main/README.md",
     "termsOfServiceURL": "https://github.com/EngAhmedShehatah/plugin-architect/blob/main/LICENSE",
