@@ -14,7 +14,7 @@
   "interface": {
     "displayName": "Plugin Architect",
     "shortDescription": "Generate a custom, codebase-focused plugin for any AI coding tool.",
-    "longDescription": "Plugin Architect analyzes your project and generates a structured, production-ready plugin for Claude Code, Copilot, Gemini, Cursor, Windsurf, Cline, opencode, or Codex — tailored to your actual tech stack.",
+    "longDescription": "Plugin Architect analyzes your project and generates a structured, production-ready plugin for Claude Code, GitHub Copilot, Gemini, opencode, or Codex — tailored to your actual tech stack.",
     "developerName": "Ahmed Shehatah",
     "category": "Productivity",
     "capabilities": ["Write"],
