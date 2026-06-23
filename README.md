@@ -1,6 +1,6 @@
 # plugin-architect
 
-> **Don't install generic plugins. Install yours.**
+> **Don't install generic plugins. Create yours.**
 
 A smart plugin that turns generic AI coding tooling into something built specifically for your project — your stack, your conventions, your workflow.
 
@@ -25,86 +25,6 @@ Most AI coding plugins are generic. They work for any project, which means they'
 | **Light**  | 1 skill + 1 agent per broad role (implementer, tester, reviewer, git-handler). Fast to set up.              |
 | **Medium** | Split by concern within a role — `unit-tester` and `e2e-tester` instead of just `tester`. More precise.     |
 | **Deep**   | Split by domain AND concern — `apex-implementer`, `mcp-implementer`, `lwc-implementer`. Maximum separation. |
-
----
-
-## File tree
-
-```text
-plugin-architect/
-├── .claude-plugin/
-│   ├── marketplace.json
-│   ├── plugin.config.json          ← $schema reference
-│   └── plugin.json                 ← marketplace manifest
-├── .github/
-│   ├── ISSUE_TEMPLATE/
-│   │   ├── bug_report.md
-│   │   └── feature_request.md
-│   └── workflows/
-│       └── validate.yml            ← CI validation on every PR
-├── .githooks/
-│   └── pre-commit                  ← version bump + markdown lint + plugin validation
-├── plugins/
-│   └── core/
-│       ├── .claude-plugin/
-│       │   ├── plugin.config.json
-│       │   └── plugin.json         ← core plugin manifest
-│       ├── .mcp.json               ← MCP server config
-│       ├── agents/
-│       │   ├── agent.config.json   ← frontmatter schema reference
-│       │   ├── agent-creator.md    ← writes agent files directly
-│       │   ├── blueprint-selector.md
-│       │   ├── git-detector.md
-│       │   ├── plugin-validator.md
-│       │   ├── schema-scanner.md
-│       │   ├── skill-creator.md    ← writes SKILL.md files directly
-│       │   └── tech-stack-detector.md
-│       ├── commands/
-│       │   ├── build-plugin.config.json
-│       │   └── build-plugin.md     ← main orchestrator command (13 steps)
-│       ├── hooks/
-│       │   └── config.json
-│       ├── modes/
-│       │   ├── light.md
-│       │   ├── medium.md
-│       │   └── deep.md
-│       ├── resources/
-│       │   └── pilot.template.md   ← template for generated pilot command
-│       ├── scripts/
-│       │   ├── session-init.mjs    ← runs on SessionStart hook
-│       │   ├── validate-plugins.mjs
-│       │   └── version-bump.mjs    ← auto-bumps patch version on every commit
-│       ├── skills/
-│       │   ├── skill.config.json
-│       │   ├── blueprint-select/
-│       │   │   ├── SKILL.md
-│       │   │   └── resources/
-│       │   │       └── urls.json
-│       │   ├── git-detect/
-│       │   │   └── SKILL.md
-│       │   ├── plugin-validate/
-│       │   │   └── SKILL.md
-│       │   ├── schema-scan/
-│       │   │   └── SKILL.md
-│       │   └── tech-stack-detect/
-│       │       └── SKILL.md
-├── .gitignore
-├── .markdownlint.json
-├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
-├── SECURITY.md
-├── package.json
-└── package-lock.json
-```
-
----
-
-## Requirements
-
-- Claude Code **v2.1.105** or later
-- Node.js **v18** or later
 
 ---
 
